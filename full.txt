@@ -44,3 +44,4 @@ VirusTotal
 VoiceDL
 HAFK
 Weather
+InfoBannersManager
