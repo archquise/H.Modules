@@ -44,8 +44,15 @@ jobs:
           </body>
           </html>
           EOF
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: main
-          folder: .
+        id: deployment
+        uses: actions/deploy-pages@v4
