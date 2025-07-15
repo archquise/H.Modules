@@ -63,6 +63,8 @@ class InfoBannersManagerMod(loader.Module):
                 
                 banner = random.choice(self.config['bannerslist'])
                 instance = self.lookup('HerokuInfo')
+                if not instance: 
+                    instance = self.lookup('HikkaInfo')
                 instance.config['banner_url'] = banner
                 
             except Exception as e:
