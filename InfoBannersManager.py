@@ -82,7 +82,7 @@ class InfoBannersManagerMod(loader.Module):
         ru_doc="Включить или выключить модуль",
     )
     async def autobannertoggle(self, message):
-        if not self.db.get(__name__, 'enabled', False):
+        if self.db.get(__name__, 'enabled', False):
             try:
                 if self.changer_instance:
                     self.changer_instance.cancel()
