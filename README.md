@@ -5,7 +5,7 @@
 <h1 align="center">H:Mods - Hikka Modules</h1>
 
 <p align="center">
-  Enhance your <a href="https://github.com/hikariatama/Hikka">Hikka</a> experience with a curated collection of community modules.
+  Enhance your <a href="https://github.com/hikariatama/Hikka">Hikka</a>/<a href="https://github.com/coddrago/Heroku">Heroku</a> experience with a curated collection of community modules.
 </p>
 
 <p align="center">
@@ -24,13 +24,13 @@ To install a module directly from the repository, use the following command:
 
 
 ```bash
-.dlm https://raw.githubusercontent.com/C0dwiz/H.Modules/main/<module_name>.py
+.dlm https://raw.githubusercontent.com/archquise/H.Modules/main/<module_name>.py
 ```
 **Example:** To install example_module.py, use:
 
 
 ```bash
-.dlm https://raw.githubusercontent.com/C0dwiz/H.Modules/main/example_module.py
+.dlm https://raw.githubusercontent.com/archquise/H.Modules/main/example_module.py
 ```
 ### 2. Repository Installation (Recommended)
 
@@ -40,7 +40,7 @@ For easier module management and updates, install the entire repository.
 
 
 ```bash
-.addrepo https://github.com/C0dwiz/H.Modules/raw/main
+.addrepo https://github.com/archquise/H.Modules/raw/main
 ```
 
 **Step 2: Install Modules from the Repository**
@@ -67,7 +67,7 @@ This project is licensed under a **Proprietary License**. By using this software
 4.  The copyright notice and this permission notice must be included in all copies or substantial portions of the Software.
 5.  By using the Software, you agree to be bound by the terms and conditions of this license.
 
-**Contact:** For any inquiries or requests for permissions, please contact codwiz@yandex.ru.
+**Contact:** For any inquiries or requests for permissions, please contact archquise@gmail.com.
 
 <details>
   <summary>Show Full License Details</summary>
@@ -80,7 +80,7 @@ This project is licensed under a **Proprietary License**. By using this software
   4. The copyright notice and this permission notice must be included in all copies or substantial portions of the Software.
   5. By using the Software, you agree to be bound by the terms and conditions of this license.
 
-  For any inquiries or requests for permissions, please contact codwiz@yandex.ru.
+  For any inquiries or requests for permissions, please contact archquise@gmail.com.
 </details>
 
 ---
