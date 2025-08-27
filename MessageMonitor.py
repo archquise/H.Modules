@@ -57,6 +57,13 @@ class MessageMonitor(loader.Module):
         "ignore_none": "Ignored chats have not been set",
         "ignore_example": "Example: <code>.ignore 123456789 -987654321</code> (chat IDs)",
         "no_reply": "Reply to a message in the desired chat or specify its ID",
+        "monitoring_msg": (
+            f"🚨 **Trigger word detected!** 🚨\n\n"
+            f"**Chat:** {} (`{}`)\n"
+            f"**User:** {}\n"
+            f"**Link:** {}\n\n"
+            f"**Messages:**\n{}"
+        ),
     }
 
     strings_ru = {
@@ -74,6 +81,13 @@ class MessageMonitor(loader.Module):
         "ignore_none": "Игнорируемые чаты не установлены",
         "ignore_example": "Пример: <code>.ignore 123456789 -987654321</code> (ID чатов)",
         "no_reply": "Ответьте на сообщение в нужном чате или укажите его ID",
+        "monitoring_msg": (
+            f"🚨 **Обнаружено триггерное слово!** 🚨\n\n"
+            f"**Чат:** {} (`{}`)\n"
+            f"**Пользователь:** {}\n"
+            f"**Ссылка:** {}\n\n"
+            f"**Сообщение:**\n{}"
+        ),
     }
 
     def __init__(self):
@@ -245,16 +259,16 @@ class MessageMonitor(loader.Module):
             ):
                 link = f"https://t.me/{sender.username}/{message.id}"
 
-            result = (
-                f"🚨 **Обнаружено триггерное слово!** 🚨\n\n"
-                f"**Чат:** {chat_title} (`{chat_id}`)\n"
-                f"**Пользователь:** {sender_name}\n"
-                f"**Ссылка:** {link}\n\n"
-                f"**Сообщение:**\n{text}"
-            )
-
             await self.client.send_message(
-                self._target_chat, result, parse_mode="Markdown"
+                self._target_chat,
+                self.strings["monitoring_msg"].format(
+                    chat_title,
+                    chat_id,
+                    sender_name,
+                    link,
+                    text,
+                ),
+                parse_mode="Markdown",
             )
             logger.debug(
                 f"Sent notification about trigger word(s) {found_triggers} to chat {self._target_chat}"

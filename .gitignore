@@ -1,4 +1,6 @@
 full.py
+autocleaner.py
+silent.py
 
 # Ruff Format
 .ruff_cache/
