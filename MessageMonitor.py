@@ -58,11 +58,11 @@ class MessageMonitor(loader.Module):
         "ignore_example": "Example: <code>.ignore 123456789 -987654321</code> (chat IDs)",
         "no_reply": "Reply to a message in the desired chat or specify its ID",
         "monitoring_msg": (
-            f"🚨 **Trigger word detected!** 🚨\n\n"
-            f"**Chat:** {} (`{}`)\n"
-            f"**User:** {}\n"
-            f"**Link:** {}\n\n"
-            f"**Messages:**\n{}"
+            "🚨 **Trigger word detected!** 🚨\n\n"
+            "**Chat:** {} (`{}`)\n"
+            "**User:** {}\n"
+            "**Link:** {}\n\n"
+            "**Messages:**\n{}"
         ),
     }
 
@@ -82,11 +82,11 @@ class MessageMonitor(loader.Module):
         "ignore_example": "Пример: <code>.ignore 123456789 -987654321</code> (ID чатов)",
         "no_reply": "Ответьте на сообщение в нужном чате или укажите его ID",
         "monitoring_msg": (
-            f"🚨 **Обнаружено триггерное слово!** 🚨\n\n"
-            f"**Чат:** {} (`{}`)\n"
-            f"**Пользователь:** {}\n"
-            f"**Ссылка:** {}\n\n"
-            f"**Сообщение:**\n{}"
+            "🚨 **Обнаружено триггерное слово!** 🚨\n\n"
+            "**Чат:** {} (`{}`)\n"
+            "**Пользователь:** {}\n"
+            "**Ссылка:** {}\n\n"
+            "**Сообщение:**\n{}"
         ),
     }
 
