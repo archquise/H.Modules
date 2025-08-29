@@ -57,7 +57,7 @@ class AccountData(loader.Module):
     )
     async def accdata(self, message):
         if reply := await message.get_reply_message():
-            result = await self.hmodslib.get_creation_date(reply.from_id)
+            result = await self.hmodslib.get_creation_date(reply.sender.id)
             if "error" in result:
                 await utils.answer(message, f"Ошибка: {result['error']}")
             else:
