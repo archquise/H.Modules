@@ -42,6 +42,7 @@ async def get_fact_about_number(number, fact_type):
             else:
                 return "Извините, не удалось получить факт."
 
+
 async def get_fact_about_date(month, day):
     date_str = datetime.now().replace(month=month, day=day).strftime("%m/%d")
     url = f"http://numbersapi.com/{date_str}/date"
@@ -75,11 +76,13 @@ class NumbersAPI(loader.Module):
         fact_type = args[1]
 
         if "." in num_or_date:
-        try:
+            try:
                 month, day = map(int, num_or_date.split("."))
                 result = await get_fact_about_date(month, day)
             except ValueError:
-                await utils.answer(message, "Ошибка: некорректный формат даты. Используйте: месяц.день")
+                await utils.answer(
+                    message, "Ошибка: некорректный формат даты. Используйте: месяц.день"
+                )
                 return
         else:
             try:

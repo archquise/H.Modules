@@ -67,10 +67,7 @@ class InlineButtonMod(loader.Module):
                     "title": self.strings("titles"),
                     "description": f"{message}, {name}, {url}",
                     "message": message,
-                    "reply_markup": [{
-                        "text": name,
-                        "url": url
-                    }]
+                    "reply_markup": [{"text": name, "url": url}],
                 }
 
         return {

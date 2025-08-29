@@ -61,7 +61,6 @@ class AniLibriaMod(loader.Module):
 
     link = "https://anilibria.tv"
 
-
     @loader.command(
         ru_doc="Возвращает случайный тайтл из базы",
         en_doc="Returns a random title from the database",

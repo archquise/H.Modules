@@ -224,17 +224,16 @@ class TaskManagerModule(loader.Module):
             return
         except Exception as e:
             logger.error(f"Error adding task: {e}")
-            await utils.answer(message, f"<emoji document_id=5778527486270770928>❌</emoji> Error: {e}")
+            await utils.answer(
+                message, f"<emoji document_id=5778527486270770928>❌</emoji> Error: {e}"
+            )
             return
 
         task = Task(description=description, due_date=due_date)
         self.task_manager.add_task(message.sender_id, task)
         await utils.answer(message, self.strings("task_added"))
 
-    @loader.command(
-        ru_doc="[index] - удалить задачу",
-        en_doc="[index] - remove task"
-    )
+    @loader.command(ru_doc="[index] - удалить задачу", en_doc="[index] - remove task")
     async def taskremove(self, message):
         args = utils.get_args_raw(message)
         if not args:
@@ -255,8 +254,7 @@ class TaskManagerModule(loader.Module):
         await utils.answer(message, self.strings("task_removed"))
 
     @loader.command(
-        ru_doc="[index] - Завершите задачу",
-        en_doc="[index] - Complete task"
+        ru_doc="[index] - Завершите задачу", en_doc="[index] - Complete task"
     )
     async def taskcomplete(self, message):
         args = utils.get_args_raw(message)
@@ -277,10 +275,7 @@ class TaskManagerModule(loader.Module):
         self.task_manager.complete_task(message.sender_id, index)
         await utils.answer(message, self.strings("task_completed"))
 
-    @loader.command(
-        ru_doc="Список задач",
-        en_doc="List tasks"
-    )
+    @loader.command(ru_doc="Список задач", en_doc="List tasks")
     async def tasklist(self, message):
         tasks = self.task_manager.get_tasks(message.sender_id)
 
@@ -331,10 +326,7 @@ class TaskManagerModule(loader.Module):
             ),
         )
 
-    @loader.command(
-        ru_doc="Удалить все задачи",
-        en_doc="Clear all tasks"
-    )
+    @loader.command(ru_doc="Удалить все задачи", en_doc="Clear all tasks")
     async def taskclear(self, message):
         await self.inline.form(
             text=self.strings("clear_confirmation_text"),

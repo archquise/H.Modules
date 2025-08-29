@@ -126,9 +126,7 @@ def gen_table(t: typing.List[typing.List[str]]) -> bytes:
     table += f"┏{('┯'.join(rows_lines))}┓\n"
 
     for line in t:
-        table += (
-            f"┃⁣⁣ {' ┃⁣⁣ '.join([fit(row, rows_sizes[k]) for k, row in enumerate(line)])} ┃⁣⁣\n"
-        )
+        table += f"┃⁣⁣ {' ┃⁣⁣ '.join([fit(row, rows_sizes[k]) for k, row in enumerate(line)])} ┃⁣⁣\n"
         table += "┠"
 
         for row in rows_sizes:
@@ -4025,7 +4023,7 @@ class HikariChatMod(loader.Module):
 
                 res += (
                     "\n        <b>- <a"
-                    f" href=\"tg://resolve?domain={getattr(c, 'username', '')}\">{c.title}</a></b>"
+                    f' href="tg://resolve?domain={getattr(c, "username", "")}">{c.title}</a></b>'
                 )
 
             res += (
@@ -4362,9 +4360,7 @@ class HikariChatMod(loader.Module):
 
                     res += (
                         "<emoji document_id=5467759840463953770>🐺</emoji> <b><a"
-                        f' href="{utils.get_link(user_obj)}">'
-                        + name
-                        + "</a></b>\n"
+                        f' href="{utils.get_link(user_obj)}">' + name + "</a></b>\n"
                     )
                     processed = []
                     for warn in _warns.copy():
@@ -5003,9 +4999,7 @@ class HikariChatMod(loader.Module):
                     await self._client(
                         EditChatDefaultBannedRightsRequest(
                             chat.id,
-                            ChatBannedRights(
-                                send_messages=True, until_date=2**31 - 1
-                            ),
+                            ChatBannedRights(send_messages=True, until_date=2**31 - 1),
                         )
                     )
                 except Exception:
@@ -5420,9 +5414,8 @@ class HikariChatMod(loader.Module):
                         "link": await utils.get_message_link(reply, chat),
                         "user_link": utils.get_link(user),
                         "user_name": get_full_name(user),
-                        "text_thumbnail": (getattr(reply, "raw_text", "") or "")[
-                            :1024
-                        ] or "<media>",
+                        "text_thumbnail": (getattr(reply, "raw_text", "") or "")[:1024]
+                        or "<media>",
                     },
                 },
                 message,

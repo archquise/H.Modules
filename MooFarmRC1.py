@@ -44,8 +44,8 @@ from .. import loader, utils
 from ..inline.types import InlineCall
 import json
 
-class DebugLogger:
 
+class DebugLogger:
     def __init__(self, client, config):
         self.client = client
         self.config = config
@@ -116,6 +116,7 @@ class DebugLogger:
         """Общий лог состояний."""
         await self.log(text, "State")
 
+
 @loader.tds
 class AutoFarmbotMod(loader.Module):
     """
@@ -125,6 +126,7 @@ class AutoFarmbotMod(loader.Module):
     Зарегистрируйтесь на Redis.io и ссылку добавьте в конфиг
 
     """
+
     # Todo: Автокрафт и Автолес готовы на 95%, автохавка на 45%
     strings = {
         "name": "AutoFarmbot",
@@ -252,41 +254,41 @@ class AutoFarmbotMod(loader.Module):
         "config_bot_auto_craft": "Крафтить предметы?\n True - Крафтить,\n False - Не крафтить.",
         "config_bot_auto_craft_count": "Cколько предметов крафтить (за раз)?\n 1-100.",
         "config_bot_auto_craft_item_name": "Впишите сюда итем, который автокрафт будет крафтить\n"
-                                           "Пример: масло, куки",
+        "Пример: масло, куки",
         "config_debug_diff_msg": "Выберите раздел для логов\n"
-                                 "Redis - База данных,\n"
-                                 "Forest - Автолес,\n"
-                                 "Eating - Автохавка,\n"
-                                 "Crafting - Автокраф,\n"
-                                 "State - Хендлеры\n"
-                                 "General - Общие\n",
+        "Redis - База данных,\n"
+        "Forest - Автолес,\n"
+        "Eating - Автохавка,\n"
+        "Crafting - Автокраф,\n"
+        "State - Хендлеры\n"
+        "General - Общие\n",
         "config_bot_auto_eat": "Кормить коровку?\n True - Кормить,\n False - Не кормить.",
         "config_bot_auto_eating": "Кормить коровку перед забиранием лута(с леса)?\n True - Кормить,\n False - Не кормить.",
         "config_bot_eat_use_count": "Сколько раз использовать еду?\n Указывать строго числа 0-9.",
         "config_bot_eat_use_item": "Чем кормить коровку?\n травка, брокколи, молоко+, холли-суп, милк-шейк",
         "config_bot_eat_lvl": "Со скольки процентов сытости начинать кормить?\n0-99",
         "config_redis_cloud_link": "Ссылка для подключения к хранилищу Redis\n"
-                                   "Ссылку брать на Redis.io",
+        "Ссылку брать на Redis.io",
         "config_debug_msg": "Сервисные сообщения модуля, нужны только для проверки работоспособности отдельных функций.\n"
-                            "Переключает сообщения с пометками [NPC], [DEBUG] и т.д.\n"
-                            "True - Включено,\n"
-                            "False - Выключено",
+        "Переключает сообщения с пометками [NPC], [DEBUG] и т.д.\n"
+        "True - Включено,\n"
+        "False - Выключено",
         "config_bot_send_logs": "Куда отправлять логи?\n"
-                                "False - Выключить логи,\n"
-                                "me - Себе(в избранное),\n"
-                                "default - дефолтный чат логов модуля,\n"
-                                "ID - любой чат, который Вы укажите.\n",
+        "False - Выключить логи,\n"
+        "me - Себе(в избранное),\n"
+        "default - дефолтный чат логов модуля,\n"
+        "ID - любой чат, который Вы укажите.\n",
         "config_bot_deletemsg_inbot": "Удалять сообщения(свои) в боте после отправки?\n"
-                                      "True< - Удалять,\n"
-                                      "False - Не удалять.\n",
+        "True< - Удалять,\n"
+        "False - Не удалять.\n",
         "config_bot_used_bot": "username или id бота, который будет использоваться для работы модуля,\nУкажите что-то одно:\n"
-                               "💗 default - @moolokobot id: 1606812809 - Стандартный,\n"
-                               "Любое другое значение из разрешенных:\n"
-                               "💗 @moolokobot id: 1606812809 - Основной, лагает,\n"
-                               "💙 @mooloko1bot id: 6467105350 - Дополнительный, лагает,\n"
-                               "💜 @mooloko2bot id: 6396922937 - Второй дополнительный, лагает,\n"
-                               "🦄 @ultramoobot id: 5641915741 - Ультра, не лагает, работает только по подписке,\n"
-                               "🇺🇦 @uamoobot id: 6770881933 - Украинский, не лагает,\n",
+        "💗 default - @moolokobot id: 1606812809 - Стандартный,\n"
+        "Любое другое значение из разрешенных:\n"
+        "💗 @moolokobot id: 1606812809 - Основной, лагает,\n"
+        "💙 @mooloko1bot id: 6467105350 - Дополнительный, лагает,\n"
+        "💜 @mooloko2bot id: 6396922937 - Второй дополнительный, лагает,\n"
+        "🦄 @ultramoobot id: 5641915741 - Ультра, не лагает, работает только по подписке,\n"
+        "🇺🇦 @uamoobot id: 6770881933 - Украинский, не лагает,\n",
         "config_bot_used_chat_id": "Если хотите чтобы модуль работал не только в боте, но и в чате, укажите Chat_id",
     }
 
@@ -296,8 +298,23 @@ class AutoFarmbotMod(loader.Module):
                 "config_debug_diff_msg",
                 [],
                 self.strings["config_debug_diff_msg"],
-                validator=loader.validators.MultiChoice(["Forest", "Forest_click", "Forest_npc", "Forest_state", "Eating", "Eating_click",
-                                                         "Eating_state", "Crafting", "Crafting_click", "Craft_state", "Redis", "State", "General"]),
+                validator=loader.validators.MultiChoice(
+                    [
+                        "Forest",
+                        "Forest_click",
+                        "Forest_npc",
+                        "Forest_state",
+                        "Eating",
+                        "Eating_click",
+                        "Eating_state",
+                        "Crafting",
+                        "Crafting_click",
+                        "Craft_state",
+                        "Redis",
+                        "State",
+                        "General",
+                    ]
+                ),
             ),
             loader.ConfigValue(
                 "config_debug_msg",
@@ -326,88 +343,105 @@ class AutoFarmbotMod(loader.Module):
                 "config_bot_used_bot",
                 [],
                 lambda: self.strings["config_bot_used_bot"],
-                #validator=loader.validators.Integer(minimum=0),
-                validator=loader.validators.MultiChoice(["1606812809", "6467105350", "6396922937", "5641915741", "6770881933"])
+                # validator=loader.validators.Integer(minimum=0),
+                validator=loader.validators.MultiChoice(
+                    [
+                        "1606812809",
+                        "6467105350",
+                        "6396922937",
+                        "5641915741",
+                        "6770881933",
+                    ]
+                ),
             ),
             loader.ConfigValue(
                 "config_bot_used_chat_id",
                 "-1001606812809",
                 lambda: self.strings["config_bot_used_chat_id"],
-                validator=loader.validators.Integer(minimum=-100999999999999999999)
+                validator=loader.validators.Integer(minimum=-100999999999999999999),
             ),
             loader.ConfigValue(
                 "config_bot_auto_eat",
                 "False",
                 lambda: self.strings["config_bot_auto_eat"],
-                validator=loader.validators.Boolean()
+                validator=loader.validators.Boolean(),
             ),
             loader.ConfigValue(
                 "config_bot_auto_eating_forest",
                 "False",
                 lambda: self.strings["config_bot_auto_eating_forest"],
-                validator=loader.validators.Boolean()
+                validator=loader.validators.Boolean(),
             ),
             loader.ConfigValue(
                 "config_bot_eat_use_count",
                 "1",
                 lambda: self.strings["config_bot_eat_use_count"],
-                validator=loader.validators.Integer(minimum=0)
+                validator=loader.validators.Integer(minimum=0),
             ),
             loader.ConfigValue(
                 "config_bot_eat_use_item",
                 "брокколи",
                 lambda: self.strings["config_bot_eat_use_item"],
-                validator=loader.validators.String()
+                validator=loader.validators.String(),
             ),
             loader.ConfigValue(
                 "config_bot_eat_lvl",
                 "50",
                 lambda: self.strings["config_bot_eat_lvl"],
-                validator=loader.validators.Integer(minimum=0)
+                validator=loader.validators.Integer(minimum=0),
             ),
             loader.ConfigValue(
                 "config_bot_auto_craft",
                 "False",
                 lambda: self.strings["config_bot_auto_craft"],
-                validator=loader.validators.Boolean()
+                validator=loader.validators.Boolean(),
             ),
             loader.ConfigValue(
                 "config_bot_auto_craft_count",
                 "50",
                 lambda: self.strings["config_bot_auto_craft_count"],
-                validator=loader.validators.Integer(minimum=0)
+                validator=loader.validators.Integer(minimum=0),
             ),
             loader.ConfigValue(
                 "config_bot_auto_craft_item_name",
                 "масло",
                 lambda: self.strings["config_bot_auto_craft_item_name"],
-                validator=loader.validators.String()
+                validator=loader.validators.String(),
             ),
             loader.ConfigValue(
                 "config_bot_auto_forest",
                 "False",
                 lambda: self.strings["config_bot_auto_forest"],
-                validator=loader.validators.Boolean()
+                validator=loader.validators.Boolean(),
             ),
             loader.ConfigValue(
                 "config_bot_auto_forest_skip_npc",
                 "True",
                 lambda: self.strings["config_bot_auto_forest_skip_npc"],
-                validator=loader.validators.Boolean()
+                validator=loader.validators.Boolean(),
             ),
             loader.ConfigValue(
                 "config_bot_autoforest_npcs",
                 [],
                 lambda: self.strings["config_bot_autoforest_npcs"],
                 validator=loader.validators.MultiChoice(
-                    ["npc_belka", "npc_jabomraz", "npc_edinorog", "npc_djun", "npc_djun_farm", "npc_chick",
-                     "npc_bear", "npc_ejik"]),
+                    [
+                        "npc_belka",
+                        "npc_jabomraz",
+                        "npc_edinorog",
+                        "npc_djun",
+                        "npc_djun_farm",
+                        "npc_chick",
+                        "npc_bear",
+                        "npc_ejik",
+                    ]
+                ),
             ),
             loader.ConfigValue(
                 "config_bot_skin_show",
                 "False",
                 lambda: self.strings["config_bot_skin_show"],
-                validator=loader.validators.Boolean()
+                validator=loader.validators.Boolean(),
             ),
             loader.ConfigValue(
                 "config_bot_skin_strings_id",
@@ -435,15 +469,17 @@ class AutoFarmbotMod(loader.Module):
         """
         self.client = client
         self.db = 0
-        self.redis = await aioredis.from_url(self.config["config_redis_cloud_link"],
-                                                  encoding="utf-8",
-                                                  decode_responses=True,
-                                                  db=self.db)
+        self.redis = await aioredis.from_url(
+            self.config["config_redis_cloud_link"],
+            encoding="utf-8",
+            decode_responses=True,
+            db=self.db,
+        )
 
         self.pubsub = self.redis.pubsub()
         self.debug = DebugLogger(self.client, self.config)
         await self.redis.config_set("notify-keyspace-events", "Ex")
-        await self.pubsub.subscribe(f'__keyevent@{self.db}__:expired')
+        await self.pubsub.subscribe(f"__keyevent@{self.db}__:expired")
 
     @loader.command()
     async def fmoo(self, message: Message):
@@ -456,92 +492,166 @@ class AutoFarmbotMod(loader.Module):
             sticker = InputDocument(
                 id=self.config["config_bot_skin_strings_id"],
                 access_hash=self.config["config_bot_skin_strings_hash"],
-                file_reference = base64.b64decode(self.config["config_bot_skin_strings_bytes"]))
+                file_reference=base64.b64decode(
+                    self.config["config_bot_skin_strings_bytes"]
+                ),
+            )
 
             await self.client.send_file(chat_id, sticker)
 
         msg, buttons = await self._moobot_info()
-        await self.inline.form(
-            message=message,
-            text=msg,
-            reply_markup=buttons
-        )
+        await self.inline.form(message=message, text=msg, reply_markup=buttons)
 
     async def _moobot_info(self):
         """
         Inline Главное меню
         :return:
         """
-        msg = (f'{self.strings["moo_menu"]}'
-               f'\t\t{self.strings["auto_forest_menu"]}'
-               f'\t\t{self.strings["auto_eating_menu"]}'
-               f'\t\t{self.strings["auto_craft_menu"]}'
-               f'\t\t{self.strings["settings_menu"]}'
-               f'\t\t{self.strings["skin_menu"]}')
+        msg = (
+            f"{self.strings['moo_menu']}"
+            f"\t\t{self.strings['auto_forest_menu']}"
+            f"\t\t{self.strings['auto_eating_menu']}"
+            f"\t\t{self.strings['auto_craft_menu']}"
+            f"\t\t{self.strings['settings_menu']}"
+            f"\t\t{self.strings['skin_menu']}"
+        )
         markup = [
             [
-                {"text": self.strings["auto_forest"], "callback": self.inline_forest_menu, "args": ()},
-                {"text": self.strings["auto_eating"], "callback": self.inline_eating_menu, "args": ()},
+                {
+                    "text": self.strings["auto_forest"],
+                    "callback": self.inline_forest_menu,
+                    "args": (),
+                },
+                {
+                    "text": self.strings["auto_eating"],
+                    "callback": self.inline_eating_menu,
+                    "args": (),
+                },
             ],
             [
-                {"text": self.strings["auto_craft"], "callback": self.inline_craft_menu, "args": ()},
-                {"text": self.strings["settings"], "callback": self.inline_misc_menu, "args": ()},
+                {
+                    "text": self.strings["auto_craft"],
+                    "callback": self.inline_craft_menu,
+                    "args": (),
+                },
+                {
+                    "text": self.strings["settings"],
+                    "callback": self.inline_misc_menu,
+                    "args": (),
+                },
             ],
-            [{"text": self.strings["bot_skin_menu_key"], "callback": self.inline_skin_menu, "args": ()}],
-            [{"text": self.strings["close_btn"], "callback": self.close_button, "args": ()}],
+            [
+                {
+                    "text": self.strings["bot_skin_menu_key"],
+                    "callback": self.inline_skin_menu,
+                    "args": (),
+                }
+            ],
+            [
+                {
+                    "text": self.strings["close_btn"],
+                    "callback": self.close_button,
+                    "args": (),
+                }
+            ],
         ]
         return msg, markup
 
-    async def moobot_info(self, call:InlineCall):
+    async def moobot_info(self, call: InlineCall):
         """
         Inline Главное меню
         :param call:
         :return:
         """
-        msg = (f'{self.strings["moo_menu"]}'
-               f'\t\t{self.strings["auto_forest_menu"]}'
-               f'\t\t{self.strings["auto_eating_menu"]}'
-               f'\t\t{self.strings["auto_craft_menu"]}'
-               f'\t\t{self.strings["settings_menu"]}'
-               f'\t\t{self.strings["skin_menu"]}')
+        msg = (
+            f"{self.strings['moo_menu']}"
+            f"\t\t{self.strings['auto_forest_menu']}"
+            f"\t\t{self.strings['auto_eating_menu']}"
+            f"\t\t{self.strings['auto_craft_menu']}"
+            f"\t\t{self.strings['settings_menu']}"
+            f"\t\t{self.strings['skin_menu']}"
+        )
         markup = [
             [
-                {"text": self.strings["auto_forest"], "callback": self.inline_forest_menu, "args": (call,)},
-                {"text": self.strings["auto_eating"], "callback": self.inline_eating_menu, "args": (call,)},
+                {
+                    "text": self.strings["auto_forest"],
+                    "callback": self.inline_forest_menu,
+                    "args": (call,),
+                },
+                {
+                    "text": self.strings["auto_eating"],
+                    "callback": self.inline_eating_menu,
+                    "args": (call,),
+                },
             ],
             [
-                {"text": self.strings["auto_craft"], "callback": self.inline_craft_menu, "args": (call,)},
-                {"text": self.strings["settings"], "callback": self.inline_misc_menu, "args": (call,)},
+                {
+                    "text": self.strings["auto_craft"],
+                    "callback": self.inline_craft_menu,
+                    "args": (call,),
+                },
+                {
+                    "text": self.strings["settings"],
+                    "callback": self.inline_misc_menu,
+                    "args": (call,),
+                },
             ],
-            [{"text": self.strings["bot_skin_menu_key"], "callback": self.inline_skin_menu, "args": (call,)}],
-            [{"text": self.strings["close_btn"], "callback": self.close_button, "args": ()}],
+            [
+                {
+                    "text": self.strings["bot_skin_menu_key"],
+                    "callback": self.inline_skin_menu,
+                    "args": (call,),
+                }
+            ],
+            [
+                {
+                    "text": self.strings["close_btn"],
+                    "callback": self.close_button,
+                    "args": (),
+                }
+            ],
         ]
         await call.edit(msg, reply_markup=markup)
 
     async def inline_forest_menu(self, call: InlineCall):
-
-        autoforest = f'{self.strings["on"]}' if self.config["config_bot_auto_forest"] else f'{self.strings["off"]}'
-        autonpc = f'{self.strings["on"]}' if self.config[
-            "config_bot_auto_forest_skip_npc"] else f'{self.strings["off"]}'
+        autoforest = (
+            f"{self.strings['on']}"
+            if self.config["config_bot_auto_forest"]
+            else f"{self.strings['off']}"
+        )
+        autonpc = (
+            f"{self.strings['on']}"
+            if self.config["config_bot_auto_forest_skip_npc"]
+            else f"{self.strings['off']}"
+        )
 
         value = self.config["config_bot_autoforest_npcs"]
         categories = [
-            "npc_belka", "npc_jabomraz", "npc_edinorog",
-            "npc_djun", "npc_djun_farm", "npc_chick",
-            "npc_bear", "npc_ejik"
+            "npc_belka",
+            "npc_jabomraz",
+            "npc_edinorog",
+            "npc_djun",
+            "npc_djun_farm",
+            "npc_chick",
+            "npc_bear",
+            "npc_ejik",
         ]
 
-        skipped_npcs = [self.strings.get(cat, cat) for cat in categories if cat in value]
-        skipped_text = "\n".join(
-            f'{self.strings["on"]} {npc}' for npc in
-            skipped_npcs) if skipped_npcs else f'{self.strings["npc_not_skipped"]}'
+        skipped_npcs = [
+            self.strings.get(cat, cat) for cat in categories if cat in value
+        ]
+        skipped_text = (
+            "\n".join(f"{self.strings['on']} {npc}" for npc in skipped_npcs)
+            if skipped_npcs
+            else f"{self.strings['npc_not_skipped']}"
+        )
 
         msg = (
-                f'{self.strings["npc_menu"]}'
-                f'{self.strings["npc_menu_autoforest"]} - <i>{autoforest}</i>\n'
-                f'{self.strings["npc_menu_skip_status"]} - <i>{autonpc}</i>\n'
-                f'{self.strings["npc_menu_skip"]}'
-                f'{self.strings["npc_menu_skip_now"]}' + skipped_text
+            f"{self.strings['npc_menu']}"
+            f"{self.strings['npc_menu_autoforest']} - <i>{autoforest}</i>\n"
+            f"{self.strings['npc_menu_skip_status']} - <i>{autonpc}</i>\n"
+            f"{self.strings['npc_menu_skip']}"
+            f"{self.strings['npc_menu_skip_now']}" + skipped_text
         )
 
         markup = [
@@ -549,34 +659,47 @@ class AutoFarmbotMod(loader.Module):
                 {
                     "text": f"{self.strings['npc_menu_autoforest_btn']} {self.strings['on_btn'] if self.config['config_bot_auto_forest'] else self.strings['off_btn']}",
                     "callback": self.toggle_config_and_refresh,
-                    "args": ("config_bot_auto_forest", self.inline_forest_menu)
+                    "args": ("config_bot_auto_forest", self.inline_forest_menu),
                 },
                 {
                     "text": f"{self.strings['npc_menu_skip_status_btn']} {self.strings['on_btn'] if self.config['config_bot_auto_forest_skip_npc'] else self.strings['off_btn']}",
                     "callback": self.toggle_config_and_refresh,
-                    "args": ("config_bot_auto_forest_skip_npc", self.inline_forest_menu)
+                    "args": (
+                        "config_bot_auto_forest_skip_npc",
+                        self.inline_forest_menu,
+                    ),
                 },
             ],
             [
                 {
                     "text": self.strings["npc_autoskip"],
                     "callback": self.inline_forest_skip_menu,
-                    "args": ()
+                    "args": (),
                 }
             ],
             [
-                {"text": self.strings["back_btn"], "callback": self.back_button, "args": ()},
-                {"text": self.strings["close_btn"], "callback": self.close_button, "args": ()}
+                {
+                    "text": self.strings["back_btn"],
+                    "callback": self.back_button,
+                    "args": (),
+                },
+                {
+                    "text": self.strings["close_btn"],
+                    "callback": self.close_button,
+                    "args": (),
+                },
             ],
         ]
         await call.edit(msg, reply_markup=markup)
 
     async def inline_skin_menu(self, call: InlineCall):
-        skin_synced = all([
-            self.config.get("config_bot_skin_strings_id"),
-            self.config.get("config_bot_skin_strings_hash"),
-            self.config.get("config_bot_skin_strings_bytes"),
-        ])
+        skin_synced = all(
+            [
+                self.config.get("config_bot_skin_strings_id"),
+                self.config.get("config_bot_skin_strings_hash"),
+                self.config.get("config_bot_skin_strings_bytes"),
+            ]
+        )
         skin_show = self.config.get("config_bot_skin_show", False)
 
         msg = (
@@ -590,19 +713,28 @@ class AutoFarmbotMod(loader.Module):
                 {
                     "text": f"{self.strings['skin_menu_show_skin_btn']} {self.strings['on_btn'] if skin_show else self.strings['off_btn']}",
                     "callback": self.toggle_config_and_refresh,
-                    "args": ("config_bot_skin_show", self.inline_skin_menu)
+                    "args": ("config_bot_skin_show", self.inline_skin_menu),
                 }
             ],
             [
                 {
                     "text": self.strings["skin_menu_sync_skin_btn"],
                     "callback": self.button_sync_skin,
-                    "args": ()
+                    "args": (),
                 }
             ],
-            [{"text": self.strings["back_btn"], "callback": self.back_button, "args": ()},
-             {"text": self.strings["close_btn"], "callback": self.close_button, "args": ()}
-             ],
+            [
+                {
+                    "text": self.strings["back_btn"],
+                    "callback": self.back_button,
+                    "args": (),
+                },
+                {
+                    "text": self.strings["close_btn"],
+                    "callback": self.close_button,
+                    "args": (),
+                },
+            ],
         ]
 
         await call.edit(msg, reply_markup=markup)
@@ -610,9 +742,14 @@ class AutoFarmbotMod(loader.Module):
     async def inline_forest_skip_menu(self, call: InlineCall):
         value = self.config["config_bot_autoforest_npcs"]
         categories = [
-            "npc_belka", "npc_jabomraz", "npc_edinorog",
-            "npc_djun", "npc_djun_farm", "npc_chick",
-            "npc_bear", "npc_ejik"
+            "npc_belka",
+            "npc_jabomraz",
+            "npc_edinorog",
+            "npc_djun",
+            "npc_djun_farm",
+            "npc_chick",
+            "npc_bear",
+            "npc_ejik",
         ]
 
         msg = (
@@ -630,39 +767,67 @@ class AutoFarmbotMod(loader.Module):
         row = []
         for i, cat in enumerate(categories):
             display_name = self.strings.get(cat, cat)
-            mark = f"{self.strings['on_btn']}" if cat in value else f"{self.strings['off_btn']}"
+            mark = (
+                f"{self.strings['on_btn']}"
+                if cat in value
+                else f"{self.strings['off_btn']}"
+            )
 
-            row.append({
-                "text": f"{display_name}: {mark}",
-                "callback": self.toggle_multi_choice,
-                "args": ("config_bot_autoforest_npcs", cat, self.inline_forest_skip_menu),
-            })
+            row.append(
+                {
+                    "text": f"{display_name}: {mark}",
+                    "callback": self.toggle_multi_choice,
+                    "args": (
+                        "config_bot_autoforest_npcs",
+                        cat,
+                        self.inline_forest_skip_menu,
+                    ),
+                }
+            )
 
             if len(row) == 2 or i == len(categories) - 1:
                 markup.append(row)
                 row = []
 
-        markup.append([{"text": self.strings["back_btn"], "callback": self.back_forest_button, "args": ()},
-                       {"text": self.strings["close_btn"], "callback": self.close_button, "args": ()}
-                       ])
+        markup.append(
+            [
+                {
+                    "text": self.strings["back_btn"],
+                    "callback": self.back_forest_button,
+                    "args": (),
+                },
+                {
+                    "text": self.strings["close_btn"],
+                    "callback": self.close_button,
+                    "args": (),
+                },
+            ]
+        )
 
         await call.edit(msg, reply_markup=markup)
 
     async def inline_eating_menu(self, call: InlineCall):
-        auto_eat = f'{self.strings["on"]}' if self.config['config_bot_auto_eat'] else f'{self.strings["off"]}'
-        eat_forest = f'{self.strings["on"]}' if self.config[
-            'config_bot_auto_eating_forest'] else f'{self.strings["off"]}'
-        item = self.config['config_bot_eat_use_item']
-        count = self.config['config_bot_eat_use_count']
-        lvl = self.config['config_bot_eat_lvl']
+        auto_eat = (
+            f"{self.strings['on']}"
+            if self.config["config_bot_auto_eat"]
+            else f"{self.strings['off']}"
+        )
+        eat_forest = (
+            f"{self.strings['on']}"
+            if self.config["config_bot_auto_eating_forest"]
+            else f"{self.strings['off']}"
+        )
+        item = self.config["config_bot_eat_use_item"]
+        count = self.config["config_bot_eat_use_count"]
+        lvl = self.config["config_bot_eat_lvl"]
 
         msg = (
             f"{self.strings['auto_eat_main_menu_txt']}"
             f"\t\t<b>{self.strings['auto_eating_main_menu_txt']}</b> - <i>{auto_eat}</i>\n\n"
-        f"\t\t<b>{self.strings['auto_eating_inforest_main_menu_txt']}</b> - <i>{eat_forest}</i>\n\n"
-        f"\t\t<b>{self.strings['auto_eating_item']}</b> - <i>{item}</i>\n\n"
-        f"\t\t<b>{self.strings['auto_eating_item_count']}</b> - <i>{count}</i>\n\n"
-        f"\t\t<b>{self.strings['auto_eating_lvl']}</b> - <i>{lvl}%</i>\n"
+            f"\t\t<b>{self.strings['auto_eating_inforest_main_menu_txt']}</b> - <i>{eat_forest}</i>\n\n"
+            f"\t\t<b>{self.strings['auto_eating_item']}</b> - <i>{item}</i>\n\n"
+            f"\t\t<b>{self.strings['auto_eating_item_count']}</b> - <i>{count}</i>\n\n"
+            f"\t\t<b>{self.strings['auto_eating_lvl']}</b> - <i>{lvl}%</i>\n"
         )
 
         markup = [
@@ -670,38 +835,55 @@ class AutoFarmbotMod(loader.Module):
                 {
                     "text": f"{self.strings['auto_eating_main_menu_txt']} {self.strings['on_btn'] if self.config['config_bot_auto_eat'] else self.strings['off_btn']}",
                     "callback": self.toggle_config_and_refresh,
-                    "args": ("config_bot_auto_eat", self.inline_eating_menu)},
+                    "args": ("config_bot_auto_eat", self.inline_eating_menu),
+                },
                 {
                     "text": f"{self.strings['auto_eating_inforest_main_menu_txt']} {self.strings['on_btn'] if self.config['config_bot_auto_eating_forest'] else self.strings['off_btn']}",
                     "callback": self.toggle_config_and_refresh,
-                    "args": ("config_bot_auto_eating_forest", self.inline_eating_menu)},
+                    "args": ("config_bot_auto_eating_forest", self.inline_eating_menu),
+                },
             ],
             [
-                {"text": f"{self.strings['auto_eating_item_count']} {count}",
-                 "input": self.strings['auto_eating_inline_count'],
-                 "handler": self.ask_config_value_handler,
-                 "args": ("config_bot_eat_use_count",)},
-                {"text": f"{self.strings['auto_eating_lvl']} - {lvl}%",
-                 "input": self.strings['auto_eating_inline_lvl'],
-                 "handler": self.ask_config_value_handler,
-                 "args": ("config_bot_eat_lvl",)},
+                {
+                    "text": f"{self.strings['auto_eating_item_count']} {count}",
+                    "input": self.strings["auto_eating_inline_count"],
+                    "handler": self.ask_config_value_handler,
+                    "args": ("config_bot_eat_use_count",),
+                },
+                {
+                    "text": f"{self.strings['auto_eating_lvl']} - {lvl}%",
+                    "input": self.strings["auto_eating_inline_lvl"],
+                    "handler": self.ask_config_value_handler,
+                    "args": ("config_bot_eat_lvl",),
+                },
             ],
             [
-                {"text": f"{self.strings['auto_eating_item']} {item}",
-                 "input": self.strings['auto_eating_inline_item'],
-                 "handler": self.ask_config_value_handler,
-                 "args": ("config_bot_eat_use_item",)},
+                {
+                    "text": f"{self.strings['auto_eating_item']} {item}",
+                    "input": self.strings["auto_eating_inline_item"],
+                    "handler": self.ask_config_value_handler,
+                    "args": ("config_bot_eat_use_item",),
+                },
             ],
-            [{"text": self.strings["back_btn"], "callback": self.back_button, "args": ()},
-             {"text": self.strings["close_btn"], "callback": self.close_button, "args": ()}
-             ],
+            [
+                {
+                    "text": self.strings["back_btn"],
+                    "callback": self.back_button,
+                    "args": (),
+                },
+                {
+                    "text": self.strings["close_btn"],
+                    "callback": self.close_button,
+                    "args": (),
+                },
+            ],
         ]
         await call.edit(msg, reply_markup=markup)
 
     async def inline_craft_menu(self, call: InlineCall):
-        auto_craft = f'{self.strings["on"] if self.config["config_bot_auto_craft"] else self.strings["off"]}'
-        item = self.config['config_bot_auto_craft_item_name']
-        count = self.config['config_bot_auto_craft_count']
+        auto_craft = f"{self.strings['on'] if self.config['config_bot_auto_craft'] else self.strings['off']}"
+        item = self.config["config_bot_auto_craft_item_name"]
+        count = self.config["config_bot_auto_craft_count"]
 
         msg = (
             f"<b>{self.strings['craft_menu_main_txt']}</b>\n\n"
@@ -715,25 +897,37 @@ class AutoFarmbotMod(loader.Module):
                 {
                     "text": f"{self.strings['craft_menu_main_craft']} {self.strings['on_btn'] if self.config['config_bot_auto_craft'] else self.strings['off_btn']}",
                     "callback": self.toggle_config_and_refresh,
-                    "args": ("config_bot_auto_craft", self.inline_craft_menu)},
+                    "args": ("config_bot_auto_craft", self.inline_craft_menu),
+                },
             ],
             [
                 {
                     "text": f"{self.strings['craft_menu_main_craft_item']} {item}",
-                    "input": self.strings['craft_menu_main_craft_item_inline'],
+                    "input": self.strings["craft_menu_main_craft_item_inline"],
                     "handler": self.ask_config_value_handler,
                     "args": ("config_bot_auto_craft_item_name", self.inline_craft_menu),
                 }
             ],
             [
-                {"text": f"{self.strings['craft_menu_main_craft_count']} {count}",
-                 "input": self.strings['craft_menu_main_craft_count_inline'],
-                 "handler": self.ask_config_value_handler,
-                 "args": ("config_bot_auto_craft_count", self.inline_craft_menu)},
+                {
+                    "text": f"{self.strings['craft_menu_main_craft_count']} {count}",
+                    "input": self.strings["craft_menu_main_craft_count_inline"],
+                    "handler": self.ask_config_value_handler,
+                    "args": ("config_bot_auto_craft_count", self.inline_craft_menu),
+                },
             ],
-            [{"text": self.strings["back_btn"], "callback": self.back_button, "args": ()},
-             {"text": self.strings["close_btn"], "callback": self.close_button, "args": ()}
-             ],
+            [
+                {
+                    "text": self.strings["back_btn"],
+                    "callback": self.back_button,
+                    "args": (),
+                },
+                {
+                    "text": self.strings["close_btn"],
+                    "callback": self.close_button,
+                    "args": (),
+                },
+            ],
         ]
         await call.edit(msg, reply_markup=markup)
 
@@ -744,39 +938,58 @@ class AutoFarmbotMod(loader.Module):
                 {
                     "text": f"{self.strings['misc_menu_main_debug']} {self.strings['on_btn'] if self.config['config_debug_msg'] else self.strings['off_btn']}",
                     "callback": self.toggle_config_and_refresh,
-                    "args": ("config_debug_msg", self.inline_misc_menu)},
+                    "args": ("config_debug_msg", self.inline_misc_menu),
+                },
             ],
             [
                 {
                     "text": f"{self.strings['misc_menu_main_deletemsg']} {self.strings['on_btn'] if self.config['config_bot_deletemsg_inbot'] else self.strings['off_btn']}",
                     "callback": self.toggle_config_and_refresh,
-                    "args": ("config_bot_deletemsg_inbot", self.inline_misc_menu)},
+                    "args": ("config_bot_deletemsg_inbot", self.inline_misc_menu),
+                },
             ],
             [
-                {"text": f"{self.strings['misc_menu_main_logs_chat']} {self.config['config_bot_send_logs']}",
-                 "input": self.strings['misc_menu_main_logs_chat_inline'],
-                 "handler": self.ask_config_value_handler,
-                 "args": ("config_bot_send_logs", self.inline_misc_menu)},
+                {
+                    "text": f"{self.strings['misc_menu_main_logs_chat']} {self.config['config_bot_send_logs']}",
+                    "input": self.strings["misc_menu_main_logs_chat_inline"],
+                    "handler": self.ask_config_value_handler,
+                    "args": ("config_bot_send_logs", self.inline_misc_menu),
+                },
             ],
             [
-                {"text": f"{self.strings['misc_menu_main_chat_id']} {self.config['config_bot_used_chat_id']}",
-                 "input": self.strings['misc_menu_main_chat_id_inline'],
-                 "handler": self.ask_config_value_handler,
-                 "args": ("config_bot_used_chat_id", self.inline_misc_menu)},
+                {
+                    "text": f"{self.strings['misc_menu_main_chat_id']} {self.config['config_bot_used_chat_id']}",
+                    "input": self.strings["misc_menu_main_chat_id_inline"],
+                    "handler": self.ask_config_value_handler,
+                    "args": ("config_bot_used_chat_id", self.inline_misc_menu),
+                },
             ],
             [
                 {
                     "text": f"{self.strings['misc_menu_main_bots_id']} {', '.join(self.config['config_bot_used_bot']) or 'Нет'}",
                     "callback": self.inline_bot_select_menu,
-                    "args": (call,)
+                    "args": (call,),
                 },
             ],
             [
-                {"text": self.strings['misc_menu_main_debug_btn_menu'], "callback": self.inline_debug_menu, "args": ()},
+                {
+                    "text": self.strings["misc_menu_main_debug_btn_menu"],
+                    "callback": self.inline_debug_menu,
+                    "args": (),
+                },
             ],
-            [{"text": self.strings["back_btn"], "callback": self.back_button, "args": ()},
-             {"text": self.strings["close_btn"], "callback": self.close_button, "args": ()}
-             ],
+            [
+                {
+                    "text": self.strings["back_btn"],
+                    "callback": self.back_button,
+                    "args": (),
+                },
+                {
+                    "text": self.strings["close_btn"],
+                    "callback": self.close_button,
+                    "args": (),
+                },
+            ],
         ]
         await call.edit(msg, reply_markup=markup)
 
@@ -799,57 +1012,98 @@ class AutoFarmbotMod(loader.Module):
                 {
                     "text": f"{name} {'✅' if bot_id in self.config['config_bot_used_bot'] else '❌'}",
                     "callback": self.set_config_bot_used_bot,
-                    "args": (bot_id, self.inline_bot_select_menu)
+                    "args": (bot_id, self.inline_bot_select_menu),
                 }
-            ] for bot_id, name in bots
+            ]
+            for bot_id, name in bots
         ]
 
-        markup.append([
-            {"text": "🗑 Очистить", "callback": self.clear_config_bot_used_bot, "args": (self.inline_bot_select_menu,)},
-            {"text": "🔙 Назад", "callback": self.inline_misc_menu, "args": ()}
-        ])
+        markup.append(
+            [
+                {
+                    "text": "🗑 Очистить",
+                    "callback": self.clear_config_bot_used_bot,
+                    "args": (self.inline_bot_select_menu,),
+                },
+                {"text": "🔙 Назад", "callback": self.inline_misc_menu, "args": ()},
+            ]
+        )
 
         await call.edit(msg, reply_markup=markup)
 
-    async def set_config_bot_used_bot(self, call: InlineCall, bot_id: str, refresh_callback, *args):
+    async def set_config_bot_used_bot(
+        self, call: InlineCall, bot_id: str, refresh_callback, *args
+    ):
         self.config["config_bot_used_bot"] = [bot_id]
         await refresh_callback(call)
 
-    async def clear_config_bot_used_bot(self, call: InlineCall, refresh_callback, *args):
+    async def clear_config_bot_used_bot(
+        self, call: InlineCall, refresh_callback, *args
+    ):
         self.config["config_bot_used_bot"] = []
         await refresh_callback(call)
 
     async def inline_debug_menu(self, call: InlineCall):
         msg = f"<b>{self.strings['debug_menu_main_txt']}</b>"
         value = self.config["config_debug_diff_msg"]
-        categories = ["Forest", "Forest_click", "Forest_npc", "Forest_state", "Eating", "Eating_click", "Eating_state",
-                      "Crafting", "Crafting_click", "Craft_state", "Redis", "State", "General"]
+        categories = [
+            "Forest",
+            "Forest_click",
+            "Forest_npc",
+            "Forest_state",
+            "Eating",
+            "Eating_click",
+            "Eating_state",
+            "Crafting",
+            "Crafting_click",
+            "Craft_state",
+            "Redis",
+            "State",
+            "General",
+        ]
         markup = []
         row = []
         for i, cat in enumerate(categories):
-            row.append({
-                "text": f"{cat}: {self.strings['on_btn'] if cat in value else self.strings['off_btn']}",
-                "callback": self.toggle_multi_choice,
-                "args": ("config_debug_diff_msg", cat, self.inline_debug_menu),
-            })
+            row.append(
+                {
+                    "text": f"{cat}: {self.strings['on_btn'] if cat in value else self.strings['off_btn']}",
+                    "callback": self.toggle_multi_choice,
+                    "args": ("config_debug_diff_msg", cat, self.inline_debug_menu),
+                }
+            )
             if len(row) == 2 or i == len(categories) - 1:
                 markup.append(row)
                 row = []
 
-        markup.append([{"text": self.strings["back_btn"], "callback": self.inline_misc_menu, "args": ()},
-                       {"text": self.strings["close_btn"], "callback": self.close_button, "args": ()}
-                       ])
+        markup.append(
+            [
+                {
+                    "text": self.strings["back_btn"],
+                    "callback": self.inline_misc_menu,
+                    "args": (),
+                },
+                {
+                    "text": self.strings["close_btn"],
+                    "callback": self.close_button,
+                    "args": (),
+                },
+            ]
+        )
         await call.edit(msg, reply_markup=markup)
 
     async def toggle_config_and_refresh(self, call: InlineCall, key, refresh_func):
         self.config[key] = not self.config[key]
         await refresh_func(call)
 
-    async def ask_config_value_handler(self, call: InlineCall, value: str, key: str, back_func):
+    async def ask_config_value_handler(
+        self, call: InlineCall, value: str, key: str, back_func
+    ):
         self.config[key] = value
         await back_func(call)
 
-    async def toggle_multi_choice(self, call: InlineCall, config_key: str, value: str, redraw_callback):
+    async def toggle_multi_choice(
+        self, call: InlineCall, config_key: str, value: str, redraw_callback
+    ):
         current = list(self.config[config_key])
         if value in current:
             current.remove(value)
@@ -883,7 +1137,9 @@ class AutoFarmbotMod(loader.Module):
 
                     self.config["config_bot_skin_strings_id"] = sticker.id
                     self.config["config_bot_skin_strings_hash"] = sticker.access_hash
-                    file_reference_b64 = base64.b64encode(sticker.file_reference).decode()
+                    file_reference_b64 = base64.b64encode(
+                        sticker.file_reference
+                    ).decode()
 
                     self.config["config_bot_skin_strings_bytes"] = file_reference_b64
 
@@ -928,7 +1184,7 @@ class AutoFarmbotMod(loader.Module):
     @loader.command()
     async def auto_eating(self, message):
         """Автоматически кормит персонажа, если уровень еды ниже 70%"""
-         #TODO: Прикрутить к инлайн-хендлеру
+        # TODO: Прикрутить к инлайн-хендлеру
         if not self.config["config_bot_auto_eat"]:
             return
         chat_id = self.get_chat_id
@@ -939,8 +1195,6 @@ class AutoFarmbotMod(loader.Module):
 
         msg = await self.client.send_message(chat_id, "/cow")
         await self.save_forest_msg(chat_id, "eating_msg", msg)
-
-
 
     async def eating_handler(self, event):
         chat_id = self.get_chat_id
@@ -997,10 +1251,14 @@ class AutoFarmbotMod(loader.Module):
                 for button in row:
                     if button.data.decode() == f"check_items {user_id}":
                         await msg.click(msg._buttons_flat.index(button))
-                        await self.debug.eat_click("[EATING] Нажата кнопка 'check_items'")
+                        await self.debug.eat_click(
+                            "[EATING] Нажата кнопка 'check_items'"
+                        )
                         await asyncio.sleep(2)
 
-                        msg = await self.client.get_messages(chat_id, ids=msg_data["id"])
+                        msg = await self.client.get_messages(
+                            chat_id, ids=msg_data["id"]
+                        )
                         break
 
             for row in msg.buttons:
@@ -1008,10 +1266,14 @@ class AutoFarmbotMod(loader.Module):
                     if button.data.decode() == f"itemuse {user_id} {eat_use_item}":
                         await msg.click(msg._buttons_flat.index(button))
                         use_count += 1
-                        await self.debug.eat_click(f"[EATING] Используем брокколи ({use_count}/{eat_use_count})")
+                        await self.debug.eat_click(
+                            f"[EATING] Используем брокколи ({use_count}/{eat_use_count})"
+                        )
                         await asyncio.sleep(3)
                         if use_count >= eat_use_count:
-                            return await self.debug.eat_click("[EATING] Достигнут лимит использования брокколи. Завершаем.")
+                            return await self.debug.eat_click(
+                                "[EATING] Достигнут лимит использования брокколи. Завершаем."
+                            )
 
     @loader.command()
     async def auto_craft_txt(self, message):
@@ -1040,10 +1302,14 @@ class AutoFarmbotMod(loader.Module):
         text = event.raw_text
 
         if "мин." in text:
-            wait_time_match = re.search(r"(?:(\d+)\s*(?:час(?:а|ов)?|⏱))?\s*(\d+)\s*мин\.", text)
+            wait_time_match = re.search(
+                r"(?:(\d+)\s*(?:час(?:а|ов)?|⏱))?\s*(\d+)\s*мин\.", text
+            )
             if wait_time_match:
                 hours = int(wait_time_match.group(1)) if wait_time_match.group(1) else 0
-                minutes = int(wait_time_match.group(2)) if wait_time_match.group(2) else 0
+                minutes = (
+                    int(wait_time_match.group(2)) if wait_time_match.group(2) else 0
+                )
                 wait_time = (hours * 60 + minutes) * 60
                 wait_time += 2 * 60
                 await self.auto_forest_jobs(wait_time, "crafting")
@@ -1067,10 +1333,16 @@ class AutoFarmbotMod(loader.Module):
                 await self.craft_start()
 
             elif "•50" in text:
-                wait_time_match = re.search(r"(?:(\d+)\s*(?:час(?:а|ов)?|⏱))?\s*(\d+)\s*мин\.", text)
+                wait_time_match = re.search(
+                    r"(?:(\d+)\s*(?:час(?:а|ов)?|⏱))?\s*(\d+)\s*мин\.", text
+                )
                 if wait_time_match:
-                    hours = int(wait_time_match.group(1)) if wait_time_match.group(1) else 0
-                    minutes = int(wait_time_match.group(2)) if wait_time_match.group(2) else 0
+                    hours = (
+                        int(wait_time_match.group(1)) if wait_time_match.group(1) else 0
+                    )
+                    minutes = (
+                        int(wait_time_match.group(2)) if wait_time_match.group(2) else 0
+                    )
                     wait_time = (hours * 60 + minutes) * 60
                     wait_time += 2 * 60
                     await self.auto_forest_jobs(wait_time, "crafting")
@@ -1094,7 +1366,9 @@ class AutoFarmbotMod(loader.Module):
                     for button in row:
                         if button.data.decode() == f"craft {user_id} takeout":
                             await msg.click(msg._buttons_flat.index(button))
-                            await self.debug.craft_click(self.strings["Debug_craft_take_ok"])
+                            await self.debug.craft_click(
+                                self.strings["Debug_craft_take_ok"]
+                            )
                             await asyncio.sleep(3)
 
     async def craft_start(self):
@@ -1111,7 +1385,9 @@ class AutoFarmbotMod(loader.Module):
                     for button in row:
                         if button.data.decode() == f"craft {user_id} check":
                             await msg.click(msg._buttons_flat.index(button))
-                            await self.debug.craft_click(self.strings["Debug_craft_start_ok"])
+                            await self.debug.craft_click(
+                                self.strings["Debug_craft_start_ok"]
+                            )
                             await asyncio.sleep(3)
 
     async def craft_finall(self):
@@ -1127,11 +1403,15 @@ class AutoFarmbotMod(loader.Module):
             if msg.buttons:
                 for row in msg.buttons:
                     for button in row:
-                        if button.data.decode().endswith(f"{user_id} f-craft {item_name}"):
+                        if button.data.decode().endswith(
+                            f"{user_id} f-craft {item_name}"
+                        ):
                             await msg.click(msg._buttons_flat.index(button))
                             await asyncio.sleep(2)
                             await msg.reply("50")
-                            await self.debug.craft_click(self.strings["Debug_craft_finall_ok"])
+                            await self.debug.craft_click(
+                                self.strings["Debug_craft_finall_ok"]
+                            )
 
     @loader.command()
     async def auto_forest_txt(self, message):
@@ -1146,7 +1426,6 @@ class AutoFarmbotMod(loader.Module):
         if self.config["config_bot_auto_eating_forest"]:
             await self.auto_eating(message)
 
-
         self.client.add_event_handler(self.forest_handler, events.NewMessage)
         self.client.add_event_handler(self.forest_handler, events.MessageEdited)
         await self.debug.forest_state(self.strings["Debug_Events_msg_set"])
@@ -1155,7 +1434,6 @@ class AutoFarmbotMod(loader.Module):
         await self.save_forest_msg(chat_id, "forest_msg", msg)
 
         await self.auto_forest_jobs(20, "del_forest_handlers")
-
 
     async def forest_handler(self, event):
         chat_id = self.get_chat_id
@@ -1173,7 +1451,9 @@ class AutoFarmbotMod(loader.Module):
         text = event.raw_text
 
         if "Твоя коровка гуляет" in text:
-            wait_time_match = re.search(r"через (?:(\d+) час(?:а|ов)? )?(\d+) минут", text)
+            wait_time_match = re.search(
+                r"через (?:(\d+) час(?:а|ов)? )?(\d+) минут", text
+            )
             if wait_time_match:
                 hours = int(wait_time_match.group(1)) if wait_time_match.group(1) else 0
                 minutes = int(wait_time_match.group(2))
@@ -1238,14 +1518,27 @@ class AutoFarmbotMod(loader.Module):
             await self.debug.forest_npc(self.strings["Debug_forest_npc_belka_msg"])
             await self.npc_belka()
 
-        elif any(trigger in text for trigger in ["Отправь коровку погулять", "не кушает травку"]):
+        elif any(
+            trigger in text
+            for trigger in ["Отправь коровку погулять", "не кушает травку"]
+        ):
             await self.save_forest_msg(chat_id, "go", event)
             await self.debug.forest_npc(self.strings["Debug_forest_cow_go_msg"])
             await self.auto_forest_go()
 
-        elif any(trigger in text for trigger in [
-            "коровка вернулась", "Коровка пришла", "пришла домой", "прискакала", "Проверишь лут",
-            "Коровочка вернулась", "вернулась из леса", "коровка принесла"]):
+        elif any(
+            trigger in text
+            for trigger in [
+                "коровка вернулась",
+                "Коровка пришла",
+                "пришла домой",
+                "прискакала",
+                "Проверишь лут",
+                "Коровочка вернулась",
+                "вернулась из леса",
+                "коровка принесла",
+            ]
+        ):
             await self.save_forest_msg(chat_id, "go", event)
             await self.debug.forest_npc(self.strings["Debug_forest_cow_takeloot_msg"])
             await self.auto_forest_takeloot()
@@ -1265,7 +1558,9 @@ class AutoFarmbotMod(loader.Module):
                         if button.data.decode() == f"forest {user_id} go":
                             await msg.click(msg._buttons_flat.index(button))
                             await self.redis.delete(f"forest_msg:{chat_id}:go")
-                            await self.debug.forest_click(self.strings["Debug_forest_cow_go_ok"])
+                            await self.debug.forest_click(
+                                self.strings["Debug_forest_cow_go_ok"]
+                            )
 
     async def auto_forest_takeloot(self):
         """
@@ -1282,7 +1577,9 @@ class AutoFarmbotMod(loader.Module):
                         if button.data.decode() == f"forest {user_id} takeloot":
                             await msg.click(msg._buttons_flat.index(button))
                             await self.auto_forest_go()
-                            await self.debug.forest_click(self.strings["Debug_forest_cow_takeloot_ok"])
+                            await self.debug.forest_click(
+                                self.strings["Debug_forest_cow_takeloot_ok"]
+                            )
 
     async def save_forest_msg(self, chat_id, action, msg):
         """
@@ -1291,8 +1588,9 @@ class AutoFarmbotMod(loader.Module):
         key = f"forest_msg:{chat_id}:{action}"
         data = {"id": msg.id, "text": msg.raw_text}
         await self.redis.set(key, json.dumps(data), ex=30)
-        await self.debug.redis(f"[REDIS] Сохранил данные в временное хранилище!\n"
-                        f"Данные: {data}")
+        await self.debug.redis(
+            f"[REDIS] Сохранил данные в временное хранилище!\nДанные: {data}"
+        )
 
     async def get_forest_msg(self, chat_id, action):
         """
@@ -1301,12 +1599,11 @@ class AutoFarmbotMod(loader.Module):
         key = f"forest_msg:{chat_id}:{action}"
         data = await self.redis.get(key)
         if data:
-            await self.debug.redis(f"[REDIS] Получил данные из хранилища!\n"
-                                    f"Ключ: {key}\n"
-                                    f"Данные: {data}")
+            await self.debug.redis(
+                f"[REDIS] Получил данные из хранилища!\nКлюч: {key}\nДанные: {data}"
+            )
             return json.loads(data)
         return None
-
 
     @loader.loop(interval=1, autostart=True)
     async def listen_to_expired_keys(self):
@@ -1369,7 +1666,9 @@ class AutoFarmbotMod(loader.Module):
         user_id = self.tg_id
         key = f"forest_task:{user_id}:{action}"
         await self.redis.set(key, "pending", ex=wait_time)
-        await self.debug.redis(f"[DEBUG] Таймер на {wait_time // 60} минут до {action} поставлен.")
+        await self.debug.redis(
+            f"[DEBUG] Таймер на {wait_time // 60} минут до {action} поставлен."
+        )
 
     async def npc_ejik(self):
         """
@@ -1385,7 +1684,9 @@ class AutoFarmbotMod(loader.Module):
                     for button in row:
                         if button.data.decode() == f"npc_inter {user_id} wind leave":
                             await msg.click(msg._buttons_flat.index(button))
-                            await self.debug.forest_npc(self.strings["Debug_forest_npc_ejik_ok"])
+                            await self.debug.forest_npc(
+                                self.strings["Debug_forest_npc_ejik_ok"]
+                            )
 
     async def npc_bear(self):
         """
@@ -1401,7 +1702,9 @@ class AutoFarmbotMod(loader.Module):
                     for button in row:
                         if button.data.decode() == f"npctrade {user_id} Тэдди no":
                             await msg.click(msg._buttons_flat.index(button))
-                            await self.debug.forest_npc(self.strings["Debug_forest_npc_bear_ok"])
+                            await self.debug.forest_npc(
+                                self.strings["Debug_forest_npc_bear_ok"]
+                            )
 
     async def npc_belka(self):
         """
@@ -1417,7 +1720,9 @@ class AutoFarmbotMod(loader.Module):
                     for button in row:
                         if button.data.decode() == f"npctrade {user_id} Белочка no":
                             await msg.click(msg._buttons_flat.index(button))
-                            await self.debug.forest_npc(self.strings["Debug_forest_npc_belka_ok"])
+                            await self.debug.forest_npc(
+                                self.strings["Debug_forest_npc_belka_ok"]
+                            )
 
     async def npc_djun_farm(self):
         """
@@ -1433,7 +1738,9 @@ class AutoFarmbotMod(loader.Module):
                     for button in row:
                         if button.data.decode() == f"npc_inter {user_id} goaway home":
                             await msg.click(msg._buttons_flat.index(button))
-                            await self.debug.forest_npc(self.strings["Debug_forest_npc_djun_ok"])
+                            await self.debug.forest_npc(
+                                self.strings["Debug_forest_npc_djun_ok"]
+                            )
 
     async def npc_djun(self):
         """
@@ -1449,7 +1756,9 @@ class AutoFarmbotMod(loader.Module):
                     for button in row:
                         if button.data.decode() == f"npc_inter {user_id} djun no":
                             await msg.click(msg._buttons_flat.index(button))
-                            await self.debug.forest_npc(self.strings["Debug_forest_npc_djun_ok"])
+                            await self.debug.forest_npc(
+                                self.strings["Debug_forest_npc_djun_ok"]
+                            )
 
     async def npc_edinorog(self):
         """
@@ -1465,7 +1774,9 @@ class AutoFarmbotMod(loader.Module):
                     for button in row:
                         if button.data.decode() == f"npctrade {user_id} Единорожка no":
                             await msg.click(msg._buttons_flat.index(button))
-                            await self.debug.forest_npc(self.strings["Debug_forest_npc_edinorog_ok"])
+                            await self.debug.forest_npc(
+                                self.strings["Debug_forest_npc_edinorog_ok"]
+                            )
 
     async def npc_jabomraz(self):
         """
@@ -1481,7 +1792,9 @@ class AutoFarmbotMod(loader.Module):
                     for button in row:
                         if button.data.decode() == f"npctrade {user_id} Жабомразь no":
                             await msg.click(msg._buttons_flat.index(button))
-                            await self.debug.forest_npc(self.strings["Debug_forest_npc_jabomraz_ok"])
+                            await self.debug.forest_npc(
+                                self.strings["Debug_forest_npc_jabomraz_ok"]
+                            )
 
     async def npc_chick(self):
         """
@@ -1497,5 +1810,6 @@ class AutoFarmbotMod(loader.Module):
                     for button in row:
                         if button.data.decode() == f"npc_inter {user_id} chick catch":
                             await msg.click(msg._buttons_flat.index(button))
-                            await self.debug.forest_npc(self.strings["Debug_forest_npc_chick_ok"])
-
+                            await self.debug.forest_npc(
+                                self.strings["Debug_forest_npc_chick_ok"]
+                            )

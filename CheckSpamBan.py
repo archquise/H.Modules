@@ -32,6 +32,7 @@ from .. import loader, utils
 
 logger = logging.getLogger(__name__)
 
+
 @loader.tds
 class SpamBanCheckMod(loader.Module):
     """Checks spam ban for your account."""
@@ -46,7 +47,7 @@ class SpamBanCheckMod(loader.Module):
     )
     async def spambot(self, message):
         async with self.client.conversation(178220800) as conv:
-            user_message = await conv.send_message('/start')
+            user_message = await conv.send_message("/start")
             await user_message.delete()
             spam_message = await conv.get_response()
         await utils.answer(message, spam_message.text)
