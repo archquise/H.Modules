@@ -94,7 +94,7 @@ class HModsLib(loader.Library):
     async def get_creation_date(self, user_id: int) -> str:
         api_token = "7518491974:1ea2284eec9dc40a9838cfbcb48a2b36"
         url = "https://api.goy.guru/api/v1/users/getCreationDateFast"
-        params = {"token": api_token, "username": user_id}
+        params = {"token": api_token, "user_id": user_id}
 
         async with aiohttp.ClientSession() as session:
             async with session.get(url, params=params) as response:
