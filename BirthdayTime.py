@@ -149,7 +149,7 @@ class DaysToMyBirthday(loader.Module):
 
                 name = user.users[0].last_name or ""
 
-                ln = f'{self.db.get(__name__, "last_name", "")} • {days} d.'
+                ln = f"{self.db.get(__name__, 'last_name', '')} • {days} d."
                 if name == ln:
                     await asyncio.sleep(60)
                     continue

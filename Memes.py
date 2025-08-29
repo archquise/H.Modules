@@ -52,7 +52,9 @@ class MemesMod(loader.Module):
     }
 
     async def client_ready(self, client, db):
-        self.hmodslib = await self.import_lib('https://raw.githubusercontent.com/C0dwiz/H.Modules/refs/heads/main-fix/HModsLibrary.py')
+        self.hmodslib = await self.import_lib(
+            "https://raw.githubusercontent.com/C0dwiz/H.Modules/refs/heads/main-fix/HModsLibrary.py"
+        )
 
     @loader.command(
         ru_doc="",

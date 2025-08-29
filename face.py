@@ -71,6 +71,8 @@ class face(loader.Module):
                 if response.status == 200:
                     data = await response.json()
                     random_face = data["data"]
-                    await utils.answer(message, self.strings("random_face").format(random_face))
+                    await utils.answer(
+                        message, self.strings("random_face").format(random_face)
+                    )
                 else:
                     await utils.answer(message, self.strings("error"))

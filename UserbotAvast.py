@@ -338,9 +338,7 @@ class SecurityAnalyzer:
             logger.exception("Unexpected error during analysis")
             return strings["syntax_error"].format(error=str(e))
 
-        return self._format_report(
-            strings, original_code
-        )
+        return self._format_report(strings, original_code)
 
     async def _ai_analysis(self, code: str) -> str or None:
         """
@@ -445,9 +443,7 @@ class SecurityAnalyzer:
                 self._check_keyword(full_attr, node)
             else:
                 self._check_keyword(node.func.attr, node)
-        elif isinstance(
-            node.func, ast.Subscript
-        ):
+        elif isinstance(node.func, ast.Subscript):
             if isinstance(node.func.value, ast.Attribute):
                 full_attr = ""
                 if isinstance(node.func.value.value, ast.Name):
@@ -653,9 +649,7 @@ class SecurityAnalyzer:
             if domain in code:
                 issue_key = (f"Short URL ({domain})", 1, 1)
                 if issue_key not in self.reported_issues:
-                    line = self._get_line_from_code(
-                        1
-                    )
+                    line = self._get_line_from_code(1)
                     match = re.search(r"(https?://\S+)", line)
                     url = (
                         match.group(1)
@@ -678,9 +672,7 @@ class SecurityAnalyzer:
             if pattern in code:
                 issue_key = (f"Webhook ({pattern})", 1, 1)
                 if issue_key not in self.reported_issues:
-                    line = self._get_line_from_code(
-                        1
-                    )
+                    line = self._get_line_from_code(1)
                     match = re.search(pattern, line)
                     url = (
                         match.group(0)

@@ -48,6 +48,9 @@ class HModsLib(loader.Library):
     developer = "@hikka_mods"
     version = __version__
 
+    async def config_complete(self):
+        self.set("goy_guru_api_token", None)  # Initialize with None, user will set it
+
     async def parse_time(self, time_str):
         time_units = {"d": 86400, "h": 3600, "m": 60, "s": 1}
         if not re.fullmatch(r"(\d+[dhms])+", time_str):
@@ -88,24 +91,24 @@ class HModsLib(loader.Library):
                 os.remove(path)
                 return result
 
-    async def get_creation_date(tg_id: int) -> str:
-        url = "https://restore-access.indream.app/regdate"
-        headers = {
-            "accept": "*/*",
-            "content-type": "application/x-www-form-urlencoded",
-            "user-agent": "Nicegram/92 CFNetwork/1390 Darwin/22.0.0",
-            "x-api-key": "e758fb28-79be-4d1c-af6b-066633ded128",
-            "accept-language": "en-US,en;q=0.9",
-        }
-        data = {"telegramId": tg_id}
+    async def get_creation_date(self, user_id: int) -> str:
+        api_token = "7518491974:1ea2284eec9dc40a9838cfbcb48a2b36"
+        url = "https://api.goy.guru/api/v1/users/getCreationDateFast"
+        params = {"token": api_token, "username": user_id}
 
         async with aiohttp.ClientSession() as session:
-            async with session.post(url, headers=headers, json=data) as response:
+            async with session.get(url, params=params) as response:
                 if response.status == 200:
                     json_response = await response.json()
-                    return json_response["data"]["date"]
+                    if json_response["success"]:
+                        return {
+                            "creation_date": json_response["creation_date"],
+                            "accuracy_text": json_response["accuracy_text"],
+                        }  # type: ignore
+                    else:
+                        return {"error": json_response["error"]["message"]}  # type: ignore
                 else:
-                    return "Ошибка получения данных"
+                    return {"error": f"HTTP {response.status}"}  # type: ignore
 
     async def get_giga_response(self, api_key, query):
         """Gets a response from GigaChat with the specified query."""

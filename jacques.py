@@ -35,7 +35,6 @@ from textwrap import wrap
 from .. import loader, utils
 
 
-
 @loader.tds
 class JacquesMod(loader.Module):
     """Жаконизатор"""
@@ -83,7 +82,9 @@ class JacquesMod(loader.Module):
             async with session.get(self.config["font"]) as font_response:
                 font_data = await font_response.read()
 
-            async with session.get("https://raw.githubusercontent.com/Codwizer/ReModules/main/assets/IMG_20231128_152538.jpg") as pic_response:
+            async with session.get(
+                "https://raw.githubusercontent.com/Codwizer/ReModules/main/assets/IMG_20231128_152538.jpg"
+            ) as pic_response:
                 pic_data = await pic_response.read()
 
         img = Image.open(io.BytesIO(pic_data)).convert("RGB")
@@ -95,7 +96,9 @@ class JacquesMod(loader.Module):
         text_size = draw.multiline_textsize(wrapped_text, font=font)
         imtext = Image.new("RGBA", (text_size[0] + 10, text_size[1] + 10), (0, 0, 0, 0))
         draw_imtext = ImageDraw.Draw(imtext)
-        draw_imtext.multiline_text((10, 10), wrapped_text, (0, 0, 0), font=font, align=self.config["location"])
+        draw_imtext.multiline_text(
+            (10, 10), wrapped_text, (0, 0, 0), font=font, align=self.config["location"]
+        )
 
         imtext.thumbnail((350, 195))
         img.paste(imtext, (10, 10), imtext)

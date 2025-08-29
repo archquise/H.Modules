@@ -74,7 +74,9 @@ class ForecastDay:
 WEATHER_EMOJI: List[WeatherCondition] = [
     WeatherCondition("clear", "<emoji document_id=5402477260982731644>☀️</emoji>"),
     WeatherCondition("sunny", "<emoji document_id=5402477260982731644>☀️</emoji>"),
-    WeatherCondition("partly cloudy", "<emoji document_id=5350424168615649565>⛅️</emoji>"),
+    WeatherCondition(
+        "partly cloudy", "<emoji document_id=5350424168615649565>⛅️</emoji>"
+    ),
     WeatherCondition("cloudy", "☁️<emoji document_id=5208563370218762357>☁️</emoji>"),
     WeatherCondition("overcast", "<emoji document_id=5208563370218762357>☁️</emoji>"),
     WeatherCondition("mist", "<emoji document_id=5449510395574229527>😶‍🌫️</emoji>"),
@@ -82,7 +84,9 @@ WEATHER_EMOJI: List[WeatherCondition] = [
     WeatherCondition("light rain", "<emoji document_id=5283097055852503586>🌦</emoji>"),
     WeatherCondition("rain", "<emoji document_id=5283243028905994049>🌧</emoji>"),
     WeatherCondition("heavy rain", "<emoji document_id=5282939632416206153>⛈</emoji>"),
-    WeatherCondition("thunderstorm", "<emoji document_id=5282939632416206153>⛈</emoji>"),
+    WeatherCondition(
+        "thunderstorm", "<emoji document_id=5282939632416206153>⛈</emoji>"
+    ),
     WeatherCondition("snow", "<emoji document_id=5282833267551117457>🌨</emoji>"),
     WeatherCondition("heavy snow", "<emoji document_id=5449449325434266744>❄️</emoji>"),
     WeatherCondition("sleet", "<emoji document_id=5282833267551117457>🌨</emoji>"),

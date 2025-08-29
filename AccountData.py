@@ -28,26 +28,27 @@
 
 from .. import loader, utils
 
+
 @loader.tds
 class AccountData(loader.Module):
     """Find out the approximate date of registration of the telegram account"""
 
     strings = {
         "name": "AccountData",
-        "date_text": "<emoji document_id=5983150113483134607>⏰️</emoji> Date of registration of this account: {data}",
+        "date_text": "<emoji document_id=5983150113483134607>⏰️</emoji> Date of registration of this account: {data} (Accuracy: {accuracy})",
         "date_text_ps": "<emoji document_id=6028435952299413210>ℹ</emoji> The registration date is approximate, as it is almost impossible to know for sure",
         "no_reply": "<emoji document_id=6030512294109122096>💬</emoji> You did not reply to the user's message",
     }
 
     strings_ru = {
-        "date_text": "<emoji document_id=5983150113483134607>⏰️</emoji> Дата регистрации этого аккаунта: {data}",
+        "date_text": "<emoji document_id=5983150113483134607>⏰️</emoji> Дата регистрации этого аккаунта: {data} (Точность: {accuracy})",
         "date_text_ps": "<emoji document_id=6028435952299413210>ℹ</emoji> Дата регистрации примерная, так как точно узнать практически невозможно",
         "no_reply": "<emoji document_id=6030512294109122096>💬</emoji> Вы не ответили на сообщение пользователя",
     }
 
     async def client_ready(self, client, db):
         self.hmodslib = await self.import_lib(
-            "https://raw.githubusercontent.com/C0dwiz/H.Modules/refs/heads/main-fix/HModsLibrary.py"
+            "https://raw.githubusercontent.com/archquise/H.Modules/refs/heads/main/HModsLibrary.py"
         )
 
     @loader.command(
@@ -56,10 +57,13 @@ class AccountData(loader.Module):
     )
     async def accdata(self, message):
         if reply := await message.get_reply_message():
-            data = await self.hmodslib.get_creation_date(reply.from_id)
-            await utils.answer(
-                message,
-                f"{self.strings('date_text').format(data=data)}\n\n{self.strings('date_text_ps')}",
-            )
+            result = await self.hmodslib.get_creation_date(reply.from_id)
+            if "error" in result:
+                await utils.answer(message, f"Ошибка: {result['error']}")
+            else:
+                await utils.answer(
+                    message,
+                    f"{self.strings('date_text').format(data=result['creation_date'], accuracy=result['accuracy_text'])}\n\n{self.strings('date_text_ps')}",
+                )
         else:
             await utils.answer(message, self.strings("no_reply"))
