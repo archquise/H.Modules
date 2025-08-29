@@ -26,6 +26,8 @@
 # scope: Api AccountData 0.0.1
 # ---------------------------------------------------------------------------------
 
+import aiohttp
+
 from .. import loader, utils
 
 
@@ -46,10 +48,24 @@ class AccountData(loader.Module):
         "no_reply": "<emoji document_id=6030512294109122096>💬</emoji> Вы не ответили на сообщение пользователя",
     }
 
-    async def client_ready(self, client, db):
-        self.hmodslib = await self.import_lib(
-            "https://raw.githubusercontent.com/archquise/H.Modules/refs/heads/main/HModsLibrary.py"
-        )
+    async def get_creation_date(self, user_id: int) -> str:
+        api_token = "7518491974:1ea2284eec9dc40a9838cfbcb48a2b36"
+        url = "https://api.goy.guru/api/v1/users/getCreationDateFast"
+        params = {"token": api_token, "user_id": user_id}
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, params=params) as response:
+                if response.status == 200:
+                    json_response = await response.json()
+                    if json_response["success"]:
+                        return {
+                            "creation_date": json_response["creation_date"],
+                            "accuracy_text": json_response["accuracy_text"],
+                        }  # type: ignore
+                    else:
+                        return {"error": json_response["error"]["message"]}  # type: ignore
+                else:
+                    return {"error": f"HTTP {response.status}"}  # type: ignore
 
     @loader.command(
         ru_doc="Узнать примерную дату регистрации аккаунта телеграмм",
@@ -57,7 +73,7 @@ class AccountData(loader.Module):
     )
     async def accdata(self, message):
         if reply := await message.get_reply_message():
-            result = await self.hmodslib.get_creation_date(reply.sender.id)
+            result = await self.get_creation_date(user_id=reply.sender.id)
             if "error" in result:
                 await utils.answer(message, f"Ошибка: {result['error']}")
             else:
