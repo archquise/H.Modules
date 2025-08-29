@@ -28,8 +28,8 @@
 
 import aiohttp
 
+from datetime import datetime
 from .. import loader, utils
-
 
 @loader.tds
 class AccountData(loader.Module):
@@ -37,13 +37,13 @@ class AccountData(loader.Module):
 
     strings = {
         "name": "AccountData",
-        "date_text": "<emoji document_id=5983150113483134607>⏰️</emoji> Date of registration of this account: {data} (Accuracy: {accuracy})",
+        "date_text": "<emoji document_id=5983150113483134607>⏰️</emoji> Date of registration of this account: {data} (Accuracy: {accuracy}%)",
         "date_text_ps": "<emoji document_id=6028435952299413210>ℹ</emoji> The registration date is approximate, as it is almost impossible to know for sure",
         "no_reply": "<emoji document_id=6030512294109122096>💬</emoji> You did not reply to the user's message",
     }
 
     strings_ru = {
-        "date_text": "<emoji document_id=5983150113483134607>⏰️</emoji> Дата регистрации этого аккаунта: {data} (Точность: {accuracy})",
+        "date_text": "<emoji document_id=5983150113483134607>⏰️</emoji> Дата регистрации этого аккаунта: {data} (Точность: {accuracy}%)",
         "date_text_ps": "<emoji document_id=6028435952299413210>ℹ</emoji> Дата регистрации примерная, так как точно узнать практически невозможно",
         "no_reply": "<emoji document_id=6030512294109122096>💬</emoji> Вы не ответили на сообщение пользователя",
     }
@@ -60,7 +60,7 @@ class AccountData(loader.Module):
                     if json_response["success"]:
                         return {
                             "creation_date": json_response["creation_date"],
-                            "accuracy_text": json_response["accuracy_text"],
+                            "accuracy_percent": json_response["accuracy_percent"],
                         }  # type: ignore
                     else:
                         return {"error": json_response["error"]["message"]}  # type: ignore
@@ -74,12 +74,16 @@ class AccountData(loader.Module):
     async def accdata(self, message):
         if reply := await message.get_reply_message():
             result = await self.get_creation_date(user_id=reply.sender.id)
+            month, year = map(int, result['creation_date'].split('.'))
+            date_object = datetime(year, month, 1)
+            formatted = date_object.strftime('%B %Y')
+
             if "error" in result:
                 await utils.answer(message, f"Ошибка: {result['error']}")
             else:
                 await utils.answer(
                     message,
-                    f"{self.strings('date_text').format(data=result['creation_date'], accuracy=result['accuracy_text'])}\n\n{self.strings('date_text_ps')}",
+                    f"{self.strings('date_text').format(data=formatted, accuracy=result['accuracy_percent'])}\n\n{self.strings('date_text_ps')}",
                 )
         else:
             await utils.answer(message, self.strings("no_reply"))
