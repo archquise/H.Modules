@@ -66,36 +66,34 @@ class TempChatMod(loader.Module):
     def __init__(self):
         self.temp_chats = {}
 
+    @loader.loop(interval=30, autostart=True)
     async def check_expired_chats(self):
-        while True:
-            now = dt.now().timestamp()
-            for chat_id in list(self.temp_chats.keys()):
-                if self.temp_chats[chat_id][1] <= now:
+        now = dt.now().timestamp()
+        for chat_id in list(self.temp_chats.keys()):
+            if self.temp_chats[chat_id][1] <= now:
+                try:
+                    await self.client(
+                        functions.channels.DeleteChannelRequest(chat_id)
+                    )
+                    del self.temp_chats[chat_id]
+                    self.set("temp_chats", self.temp_chats)
+                except Exception as e:
+                    logger.error(f"Error deleting chat {chat_id}: {e}")
                     try:
-                        await self.client(
-                            functions.channels.DeleteChannelRequest(chat_id)
+                        self.client(
+                            functions.channels.GetFullChannelRequest(
+                                channel=chat_id
+                            )
                         )
+                    except Exception:
                         del self.temp_chats[chat_id]
                         self.set("temp_chats", self.temp_chats)
-                    except Exception as e:
-                        logger.error(f"Error deleting chat {chat_id}: {e}")
-                        try:
-                            self.client(
-                                functions.channels.GetFullChannelRequest(
-                                    channel=chat_id
-                                )
-                            )
-                        except Exception:
-                            del self.temp_chats[chat_id]
-                            self.set("temp_chats", self.temp_chats)
-            await asyncio.sleep(30)
 
     async def client_ready(self, client, db):
         self.hmodslib = await self.import_lib(
-            "https://raw.githubusercontent.com/C0dwiz/H.Modules/refs/heads/main-fix/HModsLibrary.py"
+            "https://raw.githubusercontent.com/archquise/H.Modules/refs/heads/main/HModsLibrary.py"
         )
         self.temp_chats = self.get("temp_chats", {})
-        asyncio.create_task(self.check_expired_chats())
 
     @loader.command(
         ru_doc="Создает временный чат. Использование: .tmpchat [@user/reply] [time]"
