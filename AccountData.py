@@ -37,20 +37,22 @@ class AccountData(loader.Module):
 
     strings = {
         "name": "AccountData",
+        "_cls_doc": "Find out the approximate date of registration of the telegram account",
         "date_text": "<emoji document_id=5983150113483134607>⏰️</emoji> Date of registration of this account: {data} (Accuracy: {accuracy}%)",
-        "date_text_ps": "<emoji document_id=6028435952299413210>ℹ</emoji> The registration date is approximate, as it is almost impossible to know for sure",
+        "date_text_ps": "<emoji document_id=6028435952299413210>ℹ</emoji> <i>Tip: To increase accuracy, the person whose registration date is being checked can write any message to</i> @mewpl2.\n\nDon't worry, this account is not run by a person, but by a userbot just like yours, which will check the registration date using Telegram's built-in tool.",
         "no_reply": "<emoji document_id=6030512294109122096>💬</emoji> You did not reply to the user's message",
     }
 
     strings_ru = {
         "date_text": "<emoji document_id=5983150113483134607>⏰️</emoji> Дата регистрации этого аккаунта: {data} (Точность: {accuracy}%)",
-        "date_text_ps": "<emoji document_id=6028435952299413210>ℹ</emoji> Дата регистрации примерная, так как точно узнать практически невозможно",
+        "_cls_doc": "Узнайте примерную дату регистрации Telegram-аккаунта",
+        "date_text_ps": "<emoji document_id=6028435952299413210>ℹ</emoji> <i>Совет: Для повышения точности, человек, дата регистрации которого проверяется, может написать любое сообщение</i> @mewpl2.\n\nНе бойтесь, на этом аккаунте сидит не человек, а такой же юзербот, как и у вас, который проверит дату регистрации при помощи встроенного инструмента Telegram.",
         "no_reply": "<emoji document_id=6030512294109122096>💬</emoji> Вы не ответили на сообщение пользователя",
     }
 
     async def get_creation_date(self, user_id: int) -> str:
         api_token = "7518491974:1ea2284eec9dc40a9838cfbcb48a2b36"
-        url = "https://api.goy.guru/api/v1/users/getCreationDateFast"
+        url = "https://api.datereg.pro/api/v1/users/getCreationDateFast"
         params = {"token": api_token, "user_id": user_id}
 
         async with aiohttp.ClientSession() as session:
@@ -68,7 +70,7 @@ class AccountData(loader.Module):
                     return {"error": f"HTTP {response.status}"}  # type: ignore
 
     @loader.command(
-        ru_doc="Узнать примерную дату регистрации аккаунта телеграмм",
+        ru_doc="Узнать примерную дату регистрации Telergam-аккаунта",
         en_doc="Find out the approximate date of registration of the telegram account",
     )
     async def accdata(self, message):
