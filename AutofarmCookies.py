@@ -26,15 +26,16 @@
 # scope: AutofarmCookies 0.0.1
 # ---------------------------------------------------------------------------------
 
+import logging
 import random
-
 from datetime import timedelta
+
 from telethon import functions
 
 from .. import loader, utils
 
 __version__ = (1, 0, 0)
-
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class AutofarmCookiesMod(loader.Module):

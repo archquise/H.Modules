@@ -27,9 +27,11 @@
 # ---------------------------------------------------------------------------------
 
 import io
+import logging
 
 from .. import loader, utils
 
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class Text2File(loader.Module):

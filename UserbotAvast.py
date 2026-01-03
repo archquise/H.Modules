@@ -26,14 +26,14 @@
 # scope: UserbotAvast 0.0.1
 # ---------------------------------------------------------------------------------
 
-import logging
 import ast
+import base64
+import logging
+import re
+import zlib
+
 import astor
 import requests
-import base64
-import zlib
-import re
-import urllib.parse
 
 from .. import loader, utils
 

@@ -26,11 +26,12 @@
 # scope: KBSwapper 0.0.1
 # ---------------------------------------------------------------------------------
 
-
+import logging
 import string
 
 from .. import loader, utils
 
+logger = logging.getLogger(__name__)
 
 EN_TO_RU = str.maketrans(
     "qwertyuiop[]asdfghjkl;'zxcvbnm,./`" + 'QWERTYUIOP{}ASDFGHJKL:"ZXCVBNM<>?~',

@@ -27,12 +27,15 @@
 # requires: pillow
 # ---------------------------------------------------------------------------------
 
+import logging
 import os
 import tempfile
 
 from PIL import Image
+
 from .. import loader, utils
 
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class ASCIIArtMod(loader.Module):

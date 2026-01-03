@@ -23,11 +23,11 @@
 # ---------------------------------------------------------------------------------
 # meta developer: @hikka_mods
 
-from .. import loader, utils
-
+import asyncio
 import logging
 import random
-import asyncio
+
+from .. import loader, utils
 
 logger = logging.getLogger(__name__)
 

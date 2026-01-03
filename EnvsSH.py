@@ -27,57 +27,111 @@
 # requires: aiohttp
 # ---------------------------------------------------------------------------------
 
+import logging
+import os
+
 import aiohttp
 
-from .. import loader, utils  # pylint: disable=relative-beyond-top-level
+from .. import loader, utils
 
+logger = logging.getLogger(__name__)
 
 @loader.tds
-class EnvsMod(loader.Module):
-    """Module for reuploading files to envs.sh"""
+class EnvsSHMod(loader.Module):
+    """Upload files to envs.sh"""
 
     strings = {
         "name": "EnvsSH",
-        "connection_error": "🚫 Host is unreachable for now, try again later.",
-        "no_reply": "⚠️ <b>You must reply to a message with media</b>",
-        "success": "✅ URL for <code>{}</code>:\n\n<code>{}</code>",
-        "error": "❌ An error occurred:\n<code>{}</code>",
-        "uploading": "⏳ <b>Uploading {} ({}{})...</b>",
+        "no_reply": "❌ Reply to a file",
+        "uploading": "📤 Uploading {}...",
+        "success": "✅ Uploaded\n\n🔗 {}",
+        "error": "❌ Upload failed",
+        "size_error": "❌ File too large",
+        "connection_error": "❌ Connection failed",
     }
 
     strings_ru = {
-        "connection_error": "🚫 Хост в настоящее время недоступен, попробуйте позже.",
-        "no_reply": "⚠️ <b>Вы должны ответить на сообщение с медиа</b>",
-        "success": "✅ URL для <code>{}</code>:\n\n<code>{}</code>",
-        "error": "❌ Произошла ошибка:\n<code>{}</code>",
-        "uploading": "⏳ <b>Загрузка {} ({}{})...</b>",
+        "no_reply": "❌ Ответьте на файл",
+        "uploading": "📤 Загружаю {}...",
+        "success": "✅ Загружено\n\n🔗 {}",
+        "error": "❌ Ошибка загрузки",
+        "size_error": "❌ Файл слишком большой",
+        "connection_error": "❌ Ошибка соединения",
     }
 
-    async def client_ready(self, client, db):
-        self.hmodslib = await self.import_lib(
-            "https://files.archquise.ru/HModsLibrary.py"
+    def __init__(self):
+        self.config = loader.ModuleConfig(
+            loader.ConfigValue(
+                "max_size_mb",
+                100,
+                "Maximum file size in MB",
+                validator=loader.validators.Integer(minimum=1, maximum=500),
+            ),
+            loader.ConfigValue(
+                "auto_delete",
+                True,
+                "Auto delete file after upload",
+                validator=loader.validators.Boolean(),
+            ),
         )
+        self.session = None
 
-    async def envcmd(self, message):
-        """Reupload to envs.sh."""
+    async def client_ready(self, client, db):
+        self.client = client
+        self.db = db
+        self.session = aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30))
+
+    async def on_unload(self):
+        if self.session:
+            await self.session.close()
+
+    @loader.command(
+        ru_doc="[ответ] - загрузить файл на envs.sh",
+        en_doc="[reply] - upload file to envs.sh",
+    )
+    async def envs(self, message):
+        """Upload file to envs.sh"""
         reply = await message.get_reply_message()
-        if not reply or not reply.media:
+        if not reply or not reply.document:
             return await utils.answer(message, self.strings["no_reply"])
 
-        size_len, size_unit = self.hmodslib.convert_size(reply.file.size)
-        await utils.answer(
-            message,
-            self.strings["uploading"].format(reply.file.name, size_len, size_unit),
-        )
+        filename = reply.file.name or "file.bin"
+        msg = await utils.answer(message, self.strings["uploading"].format(filename))
 
-        path = await self.client.download_media(reply)
         try:
-            uploaded_url = await self.hmodslib.upload_to_envs(path)
+            file_path = await reply.download_media(file="temp/")
+
+            file_size = os.path.getsize(file_path)
+            max_size = self.config["max_size_mb"] * 1024 * 1024
+
+            if file_size > max_size:
+                os.remove(file_path)
+                return await msg.edit(self.strings["size_error"])
+
+            url = await self._upload_to_envs(file_path)
+
+            await msg.edit(self.strings["success"].format(url))
+
+            if self.config["auto_delete"]:
+                os.remove(file_path)
+
         except aiohttp.ClientConnectionError:
-            await utils.answer(message, self.strings["connection_error"])
-        except aiohttp.ClientResponseError as e:
-            await utils.answer(message, self.strings["error"].format(str(e)))
-        else:
-            await utils.answer(
-                message, self.strings["success"].format(path, uploaded_url)
-            )
+            await msg.edit(self.strings["connection_error"])
+        except Exception:
+            await msg.edit(self.strings["error"])
+            try:
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+            except:  # noqa: E722
+                pass
+
+    async def _upload_to_envs(self, file_path: str) -> str:
+        """Upload file to envs.sh and return URL"""
+        with open(file_path, "rb") as f:
+            form = aiohttp.FormData()
+            form.add_field("files[]", f, filename=os.path.basename(file_path))
+
+            async with self.session.post("https://envs.sh", data=form) as response:
+                response.raise_for_status()
+                data = await response.json()
+                return data["files"][0]["url"]

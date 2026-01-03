@@ -30,14 +30,15 @@
 # ---------------------------------------------------------------------------------
 
 import io
+import logging
 from textwrap import wrap
 
 import requests
-from PIL import Image, ImageColor, ImageDraw
-from PIL import ImageFont
+from PIL import Image, ImageColor, ImageDraw, ImageFont
 
 from .. import loader, utils
 
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class TextinstickerMod(loader.Module):

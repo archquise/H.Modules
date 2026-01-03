@@ -26,10 +26,14 @@
 # scope: Api AccountData 0.0.1
 # ---------------------------------------------------------------------------------
 
+import logging
+from datetime import datetime
+
 import aiohttp
 
-from datetime import datetime
 from .. import loader, utils
+
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class AccountData(loader.Module):

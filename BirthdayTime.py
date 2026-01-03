@@ -26,16 +26,19 @@
 # scope: Api BirthdayTime 0.0.1
 # ---------------------------------------------------------------------------------
 
-import random
 import asyncio
 import calendar
+import logging
+import random
 from datetime import datetime
 
-from telethon.tl.functions.users import GetFullUserRequest
-from telethon.tl.functions.account import UpdateProfileRequest
 from telethon.errors.rpcerrorlist import UserPrivacyRestrictedError
+from telethon.tl.functions.account import UpdateProfileRequest
+from telethon.tl.functions.users import GetFullUserRequest
 
 from .. import loader, utils
+
+logger = logging.getLogger(__name__)
 
 D_MSG = [
     "Ждешь его?",

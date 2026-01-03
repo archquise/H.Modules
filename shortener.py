@@ -28,9 +28,10 @@
 # ---------------------------------------------------------------------------------
 
 import pyshorteners
-
+import logging
 from .. import loader, utils
 
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class Shortener(loader.Module):

@@ -27,11 +27,14 @@
 # ---------------------------------------------------------------------------------
 
 import functools
-import requests
+import logging
 from typing import List
+
+import requests
 
 from .. import loader, utils
 
+logger = logging.getLogger(__name__)
 
 async def photos(tags: str, subreddit: str, quantity: int) -> List[str]:
     ans = (
@@ -61,8 +64,10 @@ class NSFWArtMod(loader.Module):
 
     strings = {
         "name": "NSFWArt",
-        "sreddit404": "🚫 <b>Subreddit not found</b>",
+        "sreddit404": "🚫 <b>Сабреддит не найден</b>",
     }
+
+    strings_ru = {"sreddit404": "🚫 <b>Сабреддит не найден</b>"}
 
     def __init__(self):
         self.config = loader.ModuleConfig(

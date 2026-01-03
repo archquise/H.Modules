@@ -27,10 +27,13 @@
 # requires: aiohttp
 # ---------------------------------------------------------------------------------
 
+import logging
+
 import aiohttp
 
 from .. import loader, utils
 
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class PastebinAPIMod(loader.Module):

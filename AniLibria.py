@@ -27,12 +27,15 @@
 # requires: git+https://github.com/C0dwiz/anilibria.py.git
 # ---------------------------------------------------------------------------------
 
-from ..inline.types import InlineQuery
-from aiogram.types import InlineQueryResultPhoto, CallbackQuery
+import logging
+
+from aiogram.types import CallbackQuery, InlineQueryResultPhoto
 from anilibria import AniLibriaClient
 
 from .. import loader
+from ..inline.types import InlineQuery
 
+logger = logging.getLogger(__name__)
 ani_client = AniLibriaClient()
 
 

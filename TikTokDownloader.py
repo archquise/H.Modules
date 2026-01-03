@@ -26,20 +26,22 @@
 # scope: Api TikTokDownloader 0.0.1
 # ---------------------------------------------------------------------------------
 
-import aiohttp
 import asyncio
-import re
-import os
-import warnings
 import functools
 import logging
-
+import os
+import re
+import warnings
 from dataclasses import dataclass
+from typing import List, Optional, Union
 from urllib.parse import urljoin
-from typing import Union, Optional, List
+
+import aiohttp
 from tqdm import tqdm
+
 from .. import loader, utils
 
+logger = logging.getLogger(__name__)
 
 @dataclass
 class data:

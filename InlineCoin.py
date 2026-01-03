@@ -26,11 +26,13 @@
 # scope: InlineCoin 0.0.1
 # ---------------------------------------------------------------------------------
 
+import logging
 import random
 
-from ..inline.types import InlineQuery
 from .. import loader
+from ..inline.types import InlineQuery
 
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class CoinSexMod(loader.Module):

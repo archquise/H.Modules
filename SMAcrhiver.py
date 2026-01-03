@@ -27,11 +27,14 @@
 # requires: zipfile
 # ---------------------------------------------------------------------------------
 
-import zipfile
+import logging
 import os
+import zipfile
 from datetime import datetime
+
 from .. import loader, utils
 
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class SMArchiver(loader.Module):

@@ -26,15 +26,15 @@
 # scope: InlineHelper 0.0.1
 # ---------------------------------------------------------------------------------
 
-import sys
-import os
 import asyncio
 import logging
+import os
+import sys
 
+from .. import loader, main, utils
 from ..inline.types import InlineQuery
 
-from .. import loader, utils, main
-
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class InlineHelperMod(loader.Module):

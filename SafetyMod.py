@@ -28,9 +28,11 @@
 
 import random
 import string
+import logging
 
 from .. import loader, utils
 
+logger = logging.getLogger(__name__)
 
 def generate_password(
     length: int, letters: bool = True, numbers: bool = True, symbols: bool = True

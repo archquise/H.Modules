@@ -26,10 +26,14 @@
 # scope: Profile 0.0.1
 # ---------------------------------------------------------------------------------
 
+import logging
+
 from telethon.errors.rpcerrorlist import UsernameOccupiedError
 from telethon.tl.functions.account import UpdateProfileRequest, UpdateUsernameRequest
+
 from .. import loader, utils
 
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class ProfileEditorMod(loader.Module):

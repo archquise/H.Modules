@@ -27,10 +27,13 @@
 # requires: requests
 # ---------------------------------------------------------------------------------
 
+import logging
+
 import requests
 
 from .. import loader, utils
 
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class animals(loader.Module):

@@ -26,10 +26,12 @@
 # scope: InlineButton 0.0.1
 # ---------------------------------------------------------------------------------
 
-from ..inline.types import InlineQuery
+import logging
 
 from .. import loader, utils
+from ..inline.types import InlineQuery
 
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class InlineButtonMod(loader.Module):

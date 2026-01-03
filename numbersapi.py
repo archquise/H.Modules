@@ -26,11 +26,14 @@
 # scope: NumbersAPI 0.0.1
 # ---------------------------------------------------------------------------------
 
-import aiohttp
+import logging
 from datetime import datetime
+
+import aiohttp
 
 from .. import loader, utils
 
+logger = logging.getLogger(__name__)
 
 async def get_fact_about_number(number, fact_type):
     url = f"http://numbersapi.com/{number}/{fact_type}"

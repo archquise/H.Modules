@@ -26,10 +26,13 @@
 # scope: IrisSimpleMod 1.0.1
 # ---------------------------------------------------------------------------------
 
+import logging
+
 from .. import loader, utils
 
 __version__ = (1, 0, 1)
 
+logger = logging.getLogger(__name__)
 
 @loader.tds
 class IrisSimpleMod(loader.Module):
