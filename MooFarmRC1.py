@@ -124,7 +124,7 @@ class AutoFarmbotMod(loader.Module):
 
     """
 
-    # Todo: Автокрафт и Автолес готовы на 95%, автохавка на 45%
+    # NOTE: Автокрафт и Автолес готовы на 95%, автохавка на 45%
     strings = {
         "name": "AutoFarmbot",
         # Inline keys

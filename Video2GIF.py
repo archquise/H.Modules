@@ -30,6 +30,7 @@ import asyncio
 import logging
 import os
 import shutil
+import subprocess
 import tempfile
 
 from .. import loader, utils
@@ -158,7 +159,7 @@ class Video2GIFMod(loader.Module):
                     proc = await asyncio.create_subprocess_exec(*optimize_cmd)
                     await proc.communicate()
                     return optimized_path
-                except:  # noqa: E722
+                except (asyncio.TimeoutError, subprocess.SubprocessError):  # noqa: E722
                     return gif_path
 
             return gif_path

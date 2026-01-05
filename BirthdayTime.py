@@ -161,9 +161,9 @@ class DaysToMyBirthday(loader.Module):
                     self.db.set(__name__, "last_name", name)
             except UserPrivacyRestrictedError:
                 self.db.set(__name__, "change_name", False)
-                print("Error: Can't change name due to privacy settings.")
+                logger.error("Error: Can't change name due to privacy settings.")
             except Exception as e:
-                print(f"Error in checker: {e}")
+                logger.error(f"Error in checker: {e}")
             finally:
                 await asyncio.sleep(60)
 
@@ -176,7 +176,7 @@ class DaysToMyBirthday(loader.Module):
             user = await self.client(GetFullUserRequest(self.client.hikka_me.id))
             name = user.users[0].last_name or ""
         except Exception as e:
-            print(f"Error getting user info: {e}")
+            logger.error(f"Error getting user info: {e}")
             await utils.answer(message, self.strings("error"))
             return
 
@@ -194,7 +194,7 @@ class DaysToMyBirthday(loader.Module):
             except UserPrivacyRestrictedError:
                 await utils.answer(message, self.strings("name_privacy_error"))
             except Exception as e:
-                print(f"Error removing name: {e}")
+                logger.error(f"Error removing name: {e}")
                 await utils.answer(message, self.strings("error"))
 
         else:
@@ -241,5 +241,5 @@ class DaysToMyBirthday(loader.Module):
             )
 
         except Exception as e:
-            print(f"Error in bt command: {e}")
+            logger.error(f"Error in bt command: {e}")
             await utils.answer(message, self.strings("error"))

@@ -122,7 +122,7 @@ class EnvsSHMod(loader.Module):
             try:
                 if os.path.exists(file_path):
                     os.remove(file_path)
-            except:  # noqa: E722
+            except OSError:  # noqa: E722
                 pass
 
     async def _upload_to_envs(self, file_path: str) -> str:

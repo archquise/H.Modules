@@ -102,7 +102,7 @@ class ASCIIArtMod(loader.Module):
                 )
 
         except Exception as e:
-            print(f"Error generating ASCII art: {e}")
+            logger.error(f"Error generating ASCII art: {e}")
             return None
         finally:
             if image_path and os.path.exists(image_path):

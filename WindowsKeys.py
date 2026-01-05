@@ -131,5 +131,5 @@ class WindowsKeysMod(loader.Module):
                     self.cache = await r.json()
                     self.cache_time = time.time()
                     return self.cache
-        except:  # noqa: E722
+        except Exception:  # noqa: E722
             return None

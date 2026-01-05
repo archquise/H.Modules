@@ -29,7 +29,7 @@
 import logging
 import re
 
-from herokutl.types import Message
+from telethon.types import Message
 
 from .. import loader, utils
 

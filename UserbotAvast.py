@@ -32,7 +32,6 @@ import logging
 import re
 import zlib
 
-import astor
 import requests
 
 from .. import loader, utils
@@ -697,7 +696,7 @@ class SecurityAnalyzer:
         for node in ast.walk(tree):
             if isinstance(node, ast.For):
                 for send_method in send_methods:
-                    if send_method in astor.to_source(node):
+                    if send_method in ast.unparse(node):
                         issue_key = (
                             f"Mass {send_method}",
                             node.lineno,
@@ -715,8 +714,8 @@ class SecurityAnalyzer:
                             )
                             self.reported_issues.add(issue_key)
 
-        if "time.sleep(" in astor.to_source(tree):
-            sleep_calls = re.findall(r"time\.sleep\((.*?)\)", astor.to_source(tree))
+        if "time.sleep(" in ast.unparse(tree):
+            sleep_calls = re.findall(r"time\.sleep\((.*?)\)", ast.unparse(tree))
             for sleep_time in sleep_calls:
                 try:
                     sleep_value = float(sleep_time)
