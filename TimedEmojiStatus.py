@@ -83,7 +83,6 @@ class TimedEmojiStatusMod(loader.Module):
         if not self._client.hikka_me.premium:
             logger.warning("Premium required for emoji status functionality")
 
-        # Restore active statuses from database
         await self._restore_active_statuses()
 
     async def _restore_active_statuses(self):
@@ -94,22 +93,18 @@ class TimedEmojiStatusMod(loader.Module):
         for user_id, data in saved.items():
             end_time = data.get("end_time", 0)
             if end_time > current_time:
-                # Status is still active, reschedule it
                 remaining_time = end_time - current_time
                 logger.info(
                     f"Restoring status for user {user_id}, remaining: {remaining_time}s"
                 )
 
-                # Schedule the revert
                 task = asyncio.create_task(
                     self._schedule_revert_sleep(user_id, remaining_time)
                 )
                 self.scheduler_tasks[user_id] = task
 
-                # Store in memory
                 self.status_data[user_id] = data
             else:
-                # Status expired, remove from database
                 logger.info(f"Removing expired status for user {user_id}")
                 del saved[user_id]
 
@@ -189,27 +184,20 @@ class TimedEmojiStatusMod(loader.Module):
         if not emoji_str:
             return "❌"
 
-        # If we have document_id, use it for proper display
         if document_id:
             return f"<emoji document_id={document_id}>📋</emoji>"
 
-        # Check if it's a document_id (numeric string)
         if emoji_str.isdigit():
             return f"<emoji document_id={emoji_str}>📋</emoji>"
 
-        # Check if it's already in emoji format
         if "<emoji document_id=" in emoji_str:
             return emoji_str
 
-        # For regular emoji characters, try to wrap in proper format
-        # First try to see if it's a single emoji character
         if len(emoji_str) == 1 or (
             len(emoji_str) <= 4 and all(ord(c) >= 0x1F000 for c in emoji_str)
         ):
-            # This might be a regular emoji, return as-is
             return emoji_str
 
-        # For complex emojis or fallback, return the original string
         return emoji_str
 
     async def _set_emoji_status(
@@ -224,14 +212,12 @@ class TimedEmojiStatusMod(loader.Module):
                 return False, None
 
             if not emoji_input:
-                # Remove status by setting empty
                 logger.info("Removing emoji status")
                 await self._client(UpdateEmojiStatusRequest(emoji_status=None))
                 return True, None
 
             document_id = None
 
-            # Method 1: Extract from message entities (most reliable)
             if message:
                 document_id = self._extract_document_id_from_entities(message)
                 if document_id:
@@ -239,13 +225,11 @@ class TimedEmojiStatusMod(loader.Module):
                         f"Found document_id from message entities: {document_id}"
                     )
 
-            # Method 2: Extract from text input
             if not document_id:
                 document_id = self._extract_document_id(emoji_input)
                 if document_id:
                     logger.info(f"Extracted document_id from text: {document_id}")
 
-            # Method 3: Send test message to get document_id
             if not document_id:
                 try:
                     logger.info("Trying to get document_id from test message")
@@ -290,7 +274,6 @@ class TimedEmojiStatusMod(loader.Module):
         """Revert status to final emoji or remove"""
         logger.info(f"Starting revert status for user {user_id}")
 
-        # Clean up scheduler task
         if user_id in self.scheduler_tasks:
             del self.scheduler_tasks[user_id]
 
@@ -305,7 +288,6 @@ class TimedEmojiStatusMod(loader.Module):
 
             try:
                 if final_emoji and final_doc_id:
-                    # Use saved document_id for final emoji
                     logger.info(
                         f"Setting final emoji using saved document_id: {final_doc_id}"
                     )
@@ -319,12 +301,11 @@ class TimedEmojiStatusMod(loader.Module):
                         )
                     except Exception as e:
                         logger.error(f"Error setting final emoji with document_id: {e}")
-                        # Fallback to regular method
+
                         success, _ = await self._set_emoji_status(final_emoji)
                         if not success:
                             await self._set_emoji_status("")
                 elif final_emoji:
-                    # Try to set final emoji without document_id
                     logger.info(f"Attempting to set final emoji: '{final_emoji}'")
                     success, final_doc_id = await self._set_emoji_status(final_emoji)
                     if success:
@@ -337,12 +318,11 @@ class TimedEmojiStatusMod(loader.Module):
                         )
                         await self._set_emoji_status("")
                 else:
-                    # No final emoji specified, remove status
                     logger.info("No final emoji specified, removing status")
                     await self._set_emoji_status("")
             except Exception as e:
                 logger.error(f"Error reverting status: {e}")
-                # Fallback: remove status
+
                 try:
                     await self._set_emoji_status("")
                 except Exception as e2:
@@ -401,7 +381,6 @@ class TimedEmojiStatusMod(loader.Module):
         if not td:
             return await utils.answer(message, self.strings["invalid_time"])
 
-        # Cancel existing task if any
         if message.sender_id in self.scheduler_tasks:
             self.scheduler_tasks[message.sender_id].cancel()
             del self.scheduler_tasks[message.sender_id]
@@ -415,17 +394,12 @@ class TimedEmojiStatusMod(loader.Module):
         except Exception as e:
             return await utils.answer(message, self.strings["error"].format(str(e)))
 
-        # Also get document_id for final emoji if specified
         final_doc_id = None
         if final_emoji:
             try:
-                # Extract document_id for final emoji without actually setting the status
                 final_doc_id = self._extract_document_id(final_emoji)
                 if not final_doc_id:
-                    # Try to get from message entities if available
                     if message and len(parts) > 2:
-                        # The final emoji might be in the message entities
-                        # Find the entity corresponding to the final emoji
                         emoji_entities = [
                             e
                             for e in message.entities
@@ -435,7 +409,6 @@ class TimedEmojiStatusMod(loader.Module):
                             final_doc_id = emoji_entities[1].document_id
 
                 if not final_doc_id:
-                    # Last resort: send test message to get document_id
                     try:
                         test_msg = await self._client.send_message("me", final_emoji)
                         final_doc_id = self._extract_document_id_from_entities(test_msg)
@@ -467,15 +440,12 @@ class TimedEmojiStatusMod(loader.Module):
             "set_time": time.time(),
         }
 
-        # Store in memory
         self.status_data[user_id] = data
 
-        # Save to database
         saved = self._db.get(__name__, "statuses", {})
         saved[user_id] = data
         self._db.set(__name__, "statuses", saved)
 
-        # Schedule the revert using asyncio.sleep
         task = asyncio.create_task(
             self._schedule_revert_sleep(user_id, td.total_seconds())
         )
@@ -484,7 +454,6 @@ class TimedEmojiStatusMod(loader.Module):
         end_dt = datetime.fromtimestamp(end_time)
         time_str = self._format_time(td)
 
-        # Format current and final emojis for display using document_ids
         logger.info(
             f"Display formatting - initial: '{initial_emoji}' (doc_id: {initial_doc_id}), final: '{final_emoji}' (doc_id: {final_doc_id})"
         )
@@ -528,7 +497,6 @@ class TimedEmojiStatusMod(loader.Module):
         remaining = timedelta(seconds=end_time - time.time())
         remaining_str = self._format_time(remaining)
 
-        # Format current and final emojis for display using document_ids
         current_display = self._safe_emoji_display(initial_emoji, initial_doc_id)
         final_display = (
             self._safe_emoji_display(final_emoji, final_doc_id)
@@ -551,7 +519,6 @@ class TimedEmojiStatusMod(loader.Module):
         if user_id not in self.status_data:
             return await utils.answer(message, self.strings["no_status"])
 
-        # Cancel scheduled task
         if user_id in self.scheduler_tasks:
             self.scheduler_tasks[user_id].cancel()
             del self.scheduler_tasks[user_id]
