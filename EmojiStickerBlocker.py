@@ -40,21 +40,21 @@ logger = logging.getLogger(__name__)
 
 
 @loader.tds
-class EmojiStickerBlockerMod(loader.Module):
-    """Block emojis, stickers and sticker packs"""
+class EmojiStickerBlocker(loader.Module):
+    """Block emojis, stickers and sticker packs with enhanced functionality"""
 
     strings = {
         "name": "EmojiStickerBlocker",
-        "no_permission": "❌ Need delete messages permission",
-        "pack_blocked": "✅ Pack blocked",
-        "pack_not_found": "❌ Pack not found",
-        "sticker_blocked": "✅ Sticker blocked",
-        "emoji_blocked": "✅ Emoji blocked",
-        "pack_unblocked": "✅ Pack unblocked",
-        "item_unblocked": "✅ Item unblocked",
-        "not_found": "❌ Not in blocklist",
-        "no_reply": "❌ Reply to a sticker or emoji",
-        "no_args": "❌ Specify pack link or name",
+        "no_permission": "<emoji document_id=5854929766146118183>❌</emoji> Need delete messages permission",
+        "pack_blocked": "<emoji document_id=5854762571659218443>✅</emoji> Pack blocked",
+        "pack_not_found": "<emoji document_id=5854929766146118183>❌</emoji> Pack not found",
+        "sticker_blocked": "<emoji document_id=5854929766146118183>❌</emoji> Sticker blocked",
+        "emoji_blocked": "<emoji document_id=5854929766146118183>❌</emoji> Emoji blocked",
+        "pack_unblocked": "<emoji document_id=5854762571659218443>✅</emoji> Pack unblocked",
+        "item_unblocked": "<emoji document_id=5854929766146118183>❌</emoji> Item unblocked",
+        "not_found": "<emoji document_id=5854929766146118183>❌</emoji> Not in blocklist",
+        "no_reply": "<emoji document_id=5854929766146118183>❌</emoji> Reply to a sticker or emoji",
+        "no_args": "<emoji document_id=5854929766146118183>❌</emoji> Specify pack link or name",
         "list_packs": "📦 Blocked packs: {}",
         "list_stickers": "🖼 Blocked stickers: {}",
         "list_emojis": "😀 Blocked emojis: {}",
@@ -62,17 +62,16 @@ class EmojiStickerBlockerMod(loader.Module):
     }
 
     strings_ru = {
-        "name": "EmojiStickerBlocker",
-        "no_permission": "❌ Нужны права на удаление сообщений",
-        "pack_blocked": "✅ Пак заблокирован",
-        "pack_not_found": "❌ Пак не найден",
-        "sticker_blocked": "✅ Стикер заблокирован",
-        "emoji_blocked": "✅ Эмодзи заблокировано",
-        "pack_unblocked": "✅ Пак разблокирован",
-        "item_unblocked": "✅ Элемент разблокирован",
-        "not_found": "❌ Не найден в блоклисте",
-        "no_reply": "❌ Ответьте на стикер или эмодзи",
-        "no_args": "❌ Укажите ссылку или название пака",
+        "no_permission": "<emoji document_id=5854929766146118183>❌</emoji> Нужны права на удаление сообщений",
+        "pack_blocked": "<emoji document_id=5188311512791393083>✅</emoji> Пак заблокирован",
+        "pack_not_found": "<emoji document_id=5854929766146118183>❌</emoji> Пак не найден",
+        "sticker_blocked": "<emoji document_id=5854929766146118183>❌</emoji> Стикер заблокирован",
+        "emoji_blocked": "<emoji document_id=5854929766146118183>❌</emoji> Эмодзи заблокирован",
+        "pack_unblocked": "<emoji document_id=5854762571659218443>✅</emoji> Пак разблокирован",
+        "item_unblocked": "<emoji document_id=5854929766146118183>❌</emoji> Элемент разблокирован",
+        "not_found": "<emoji document_id=5854929766146118183>❌</emoji> Не найден в блоклисте",
+        "no_reply": "<emoji document_id=5854929766146118183>❌</emoji> Ответьте на стикер или эмодзи",
+        "no_args": "<emoji document_id=5854929766146118183>❌</emoji> Укажите ссылку или название пака",
         "list_packs": "📦 Заблокированные паки: {}",
         "list_stickers": "🖼 Заблокированные стикеры: {}",
         "list_emojis": "😀 Заблокированные эмодзи: {}",
@@ -127,8 +126,8 @@ class EmojiStickerBlockerMod(loader.Module):
 
         if emojis:
             return emojis[0]
-
-        return None
+        else:
+            return None
 
     async def _delete_message(self, message: Message) -> bool:
         """Delete message with error handling"""

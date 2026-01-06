@@ -30,12 +30,12 @@ import asyncio
 import logging
 import os
 import shutil
-import subprocess
 import tempfile
 
 from .. import loader, utils
 
 logger = logging.getLogger(__name__)
+
 
 @loader.tds
 class Video2GIFMod(loader.Module):
@@ -110,56 +110,23 @@ class Video2GIFMod(loader.Module):
         """Convert video to optimized GIF"""
         with tempfile.TemporaryDirectory() as tmpdir:
             video_path = os.path.join(tmpdir, "video.mp4")
-            palette_path = os.path.join(tmpdir, "palette.png")
             gif_path = os.path.join(tmpdir, "output.gif")
-            optimized_path = os.path.join(tmpdir, "optimized.gif")
 
             await reply.download_media(video_path)
 
-            palette_cmd = [
+            cmd = [
                 "ffmpeg",
                 "-i",
                 video_path,
                 "-vf",
-                f"fps={fps},scale={width}:-1:flags=lanczos,palettegen=stats_mode=diff",
-                "-y",
-                palette_path,
-            ]
-
-            proc = await asyncio.create_subprocess_exec(*palette_cmd)
-            await proc.communicate()
-
-            gif_cmd = [
-                "ffmpeg",
-                "-i",
-                video_path,
-                "-i",
-                palette_path,
-                "-filter_complex",
-                f"fps={fps},scale={width}:-1:flags=lanczos[x];[x][1:v]paletteuse=dither=sierra2_4a",
+                f"fps={fps},scale={width}:-1:flags=lanczos",
+                "-lavfi",
+                "[0:v]split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse",
                 "-y",
                 gif_path,
             ]
 
-            proc = await asyncio.create_subprocess_exec(*gif_cmd)
+            proc = await asyncio.create_subprocess_exec(*cmd)
             await proc.communicate()
-
-            if shutil.which("gifsicle"):
-                optimize_cmd = [
-                    "gifsicle",
-                    "-O3",
-                    "--lossy=80",
-                    "--colors=256",
-                    gif_path,
-                    "-o",
-                    optimized_path,
-                ]
-
-                try:
-                    proc = await asyncio.create_subprocess_exec(*optimize_cmd)
-                    await proc.communicate()
-                    return optimized_path
-                except (asyncio.TimeoutError, subprocess.SubprocessError):  # noqa: E722
-                    return gif_path
 
             return gif_path
