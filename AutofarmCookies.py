@@ -31,6 +31,7 @@ import random
 from datetime import timedelta
 
 from telethon import functions
+from telethon.tl.custom import Message
 
 from .. import loader, utils
 
@@ -198,8 +199,7 @@ class AutofarmCookiesMod(loader.Module):
     async def ckies(self, message):
         chelp = """
             🍀| <b>Помощь по командам:</b>
-            .cookon - Включает авто фарм.
-            .cookoff - Выключает авто фарм.
-            .farm - Показывает сколько вы нафармили.
-            .me - Показывает ваш ммешок"""
+            .cookon - Включает авто-фарм.
+            .cookoff - Выключает авто-фарм.
+            .me - Показывает ваш мешок"""
         await utils.answer(message, chelp)
