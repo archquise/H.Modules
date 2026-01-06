@@ -18,7 +18,7 @@
 
 # ---------------------------------------------------------------------------------
 # Name: Aniliberty
-# Description: Searches and gives random agtme on the Aniliberty database.
+# Description: Searches and gives random anime on the Aniliberty database.
 # Author: @hikka_mods
 # ---------------------------------------------------------------------------------
 # meta developer: @hikka_mods
@@ -43,6 +43,9 @@ from ..inline.types import InlineQuery
 
 logger = logging.getLogger(__name__)
 
+BASE_API_URL = "https://aniliberty.top/api/v1" 
+
+# Датаклассы для парсинга и хранения json
 @dataclass
 class Genre:
     name: str
@@ -67,8 +70,6 @@ class ReleaseInfo:
     added_in_users_favorites: int
     alias: str
     poster: Poster
-    
-
 
 @loader.tds
 class AniLibertyMod(loader.Module):
@@ -91,11 +92,9 @@ class AniLibertyMod(loader.Module):
         "favorite": "<b>Избранное &lt;3</b>:",  # &lt; == <
     }
 
-    BASE_API_URL = "https://aniliberty.top/api/v1"
-
     async def search_title(self, query):
         async with aiohttp.ClientSession() as session:
-            async with session.get(f'{self.BASE_API_URL}/app/search/releases?query={query}&include=id%2Cname.main%2Cis_ongoing%2Ctype.description%2Cdescription%2Cadded_in_users_favorites%2Calias%2Cposter.preview%2Cposter.thumbnail') as resp:
+            async with session.get(f'{BASE_API_URL}/app/search/releases?query={query}&include=id%2Cname.main%2Cis_ongoing%2Ctype.description%2Cdescription%2Cadded_in_users_favorites%2Calias%2Cposter.preview%2Cposter.thumbnail') as resp:
                 json_answer = await resp.json()
                 results = []
                 for i in json_answer:
@@ -105,7 +104,7 @@ class AniLibertyMod(loader.Module):
    
     async def get_title(self, release_id):
         async with aiohttp.ClientSession() as session:
-            async with session.get(f'{self.BASE_API_URL}/anime/releases/{release_id}?include=id%2Cgenres.name%2Cname.main%2Cis_ongoing%2Ctype.description%2Cdescription%2Cadded_in_users_favorites%2Calias%2Cposter.preview%2Cposter.thumbnail') as resp:
+            async with session.get(f'{BASE_API_URL}/anime/releases/{release_id}?include=id%2Cgenres.name%2Cname.main%2Cis_ongoing%2Ctype.description%2Cdescription%2Cadded_in_users_favorites%2Calias%2Cposter.preview%2Cposter.thumbnail') as resp:
                     try:
                         json_answer = await resp.json()
                         data = from_dict(data_class=ReleaseInfo, data=json_answer)
@@ -115,7 +114,7 @@ class AniLibertyMod(loader.Module):
 
     async def get_random_title(self):
         async with aiohttp.ClientSession() as session:
-            async with session.get(f'{self.BASE_API_URL}/anime/releases/random?limit=1&include=id') as resp:
+            async with session.get(f'{BASE_API_URL}/anime/releases/random?limit=1&include=id') as resp:
                 randid = await resp.json()
                 """ 
                 Приходится запрашивать по второму кругу, т.к. API в рандомных релизах не отдает жанры, даже если попросить через include
