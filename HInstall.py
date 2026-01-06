@@ -1,6 +1,6 @@
 # 🔐 Licensed under the GNU AGPLv3.
 # ---------------------------------------------------------------------------------
-# Name: HEasyInstall
+# Name: HInstall
 # Description: Provides H:Mods modules installation trough buttons
 # Author: @hikka_mods
 # ---------------------------------------------------------------------------------
@@ -50,11 +50,11 @@ pubkey = RSA.importKey(pubkey_data.strip())
 
 
 @loader.tds
-class HEasyInstallMod(loader.Module):
+class HInstallMod(loader.Module):
     """Provides H:Mods modules installation trough buttons"""
 
     strings = {
-        "name": "HEasyInstall",
+        "name": "HInstall",
         "_cls_doc": "Provides H:Mods modules installation trough buttons",
         "module_downloaded": "Module downloaded!"
     }
@@ -65,11 +65,11 @@ class HEasyInstallMod(loader.Module):
     }
 
     async def on_dlmod(self, client, db):
-        ent = await self.client(functions.users.GetFullUserRequest('@heasyinstall_bot'))
+        ent = await self.client(functions.users.GetFullUserRequest('@hinstall_bot'))
         if ent.full_user.blocked:
-            await self.client(functions.contacts.UnblockRequest('@heasyinstall_bot'))
-        await self.client.send_message('@heasyinstall_bot', '/start')
-        await self.client.delete_dialog('@heasyinstall_bot')
+            await self.client(functions.contacts.UnblockRequest('@hinstall_bot'))
+        await self.client.send_message('@hinstall_bot', '/start')
+        await self.client.delete_dialog('@hinstall_bot')
 
     
     async def _load_module(self, url: str, message: Optional[Message] = None):
@@ -88,7 +88,7 @@ class HEasyInstallMod(loader.Module):
     async def watcher(self, message: Message):
         if not isinstance(message, Message):
             return
-        if message.sender_id == 8539856059 and message.raw_text.startswith("#install"):
+        if message.sender_id == 8104671142 and message.raw_text.startswith("#install"):
             await message.delete()
             fileref = (
                 message.raw_text.split("#install:")[1].strip().splitlines()[0].strip()
@@ -101,7 +101,7 @@ class HEasyInstallMod(loader.Module):
                 logger.error(f"Got message with non-verified signature ({fileref=})")
                 return
             await self._load_module(f"https://raw.githubusercontent.com/archquise/H.Modules/refs/heads/main/{fileref}", message)
-            await self.client.send_message('@heasyinstall_bot', self.strings['module_downloaded'])
+            await self.client.send_message('@hinstall_bot', self.strings['module_downloaded'])
             
 
     
