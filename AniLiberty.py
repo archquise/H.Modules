@@ -17,14 +17,14 @@
 # For any inquiries or requests for permissions, please contact archquise@gmail.com
 
 # ---------------------------------------------------------------------------------
-# Name: AniLibria
-# Description: Searches and gives random agtme on the AniLibria database.
+# Name: Aniliberty
+# Description: Searches and gives random agtme on the Aniliberty database.
 # Author: @hikka_mods
 # ---------------------------------------------------------------------------------
 # meta developer: @hikka_mods
 # requires: dacite
-# scope: AniLibria
-# scope: AniLibria 0.0.1
+# scope: AniLiberty
+# scope: AniLiberty 0.0.1
 # ---------------------------------------------------------------------------------
 
 import logging
