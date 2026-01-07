@@ -104,7 +104,7 @@ class MessageMonitor(loader.Module):
                 "target_chat",
                 None,
                 "Target chat ID for notifications",
-                validator=loader.validators.Integer(allow_none=True),
+                validator=loader.validators.Integer(),
             ),
             loader.ConfigValue(
                 "ignore_chats",
