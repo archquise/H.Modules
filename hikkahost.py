@@ -26,12 +26,15 @@
 # scope: api HikkaHost 0.0.1
 # ---------------------------------------------------------------------------------
 
-import aiohttp
 import json
+import logging
 from datetime import datetime, timedelta, timezone
+
+import aiohttp
 
 from .. import loader, utils
 
+logger = logging.getLogger(__name__)
 
 class HostApi:
     """
@@ -311,4 +314,4 @@ class HikkahostMod(loader.Module):
         user_id = token.split(":")[0]
         api = HostApi(token)
 
-        data = await api.action(user_id, token)
+        await api.action(user_id, token)
