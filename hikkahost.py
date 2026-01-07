@@ -58,7 +58,7 @@ class HostApi:
         Returns:
             dict: The API response as a dictionary.
         """
-        url = "http://158.160.84.24:5000" + path
+        url = "http://api.hikka.host" + path
         async with aiohttp.ClientSession(trust_env=True) as session:
             async with session.request(
                 method,
