@@ -133,11 +133,12 @@ class AniLibertyMod(loader.Module):
             genres_str += f'{genre.name}, '
         genres_str += anime_release.genres[-1].name
 
+        
         text = f"{anime_release.name.main} \n"
-        text += f"{self.strings['ongoing']} {"Да" if anime_release.is_ongoing else "Нет"}\n\n"
+        text += f"{self.strings['ongoing']} {'Да' if anime_release.is_ongoing else 'Нет'}\n\n"
         text += f"{self.strings['type']} {anime_release.type.description}\n"
         text += f"{self.strings['genres']} {genres_str}\n\n"
-
+        
         text += f"<code>{anime_release.description}</code>\n\n"
         text += f"{self.strings['favorite']} {str(anime_release.added_in_users_favorites)}"
 
