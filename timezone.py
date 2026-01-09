@@ -84,15 +84,3 @@ class TimeZoneMod(loader.Module):
             logger.error(self.strings['tzdata_error'].format(e))
             return
         await utils.answer(message, self.strings['time_tzdata'].format(args[0], time.strftime('%H:%M:%S')))
-
-
-
-
-
-        
-            
-
-
-
-
-
