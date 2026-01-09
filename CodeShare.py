@@ -81,6 +81,7 @@ class CodeShareMod(loader.Module):
             async with aiofiles.open(file_name, mode='r') as f:
                 content = await f.read()
             link = await self.upload_to_kmi(content)
+            await aiofiles.os.remove(file_name)
             await utils.answer(message, self.strings['link_ready'].format(link))
             return
         await utils.answer(message, self.strings['invalid_args'])
