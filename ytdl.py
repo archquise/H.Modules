@@ -51,19 +51,15 @@ class YTDLMod(loader.Module):
         "name": "YTDL",
         "_cls_doc": "Downloads and sends audio/video from YouTube",
         "invalid_args": "<emoji document_id=5854929766146118183>❌</emoji> There is no arguments or they are invalid",
-        "downloading_video": "<emoji document_id=5215484787325676090>🕐</emoji> Video is downloading...",
-        "downloaded_video": "<emoji document_id=5854762571659218443>✅</emoji> Video is downloaded!",
-        "downloading_audio": "<emoji document_id=5215484787325676090>🕐</emoji> Audio is downloading...",
-        "downloaded_audio": "<emoji document_id=5854762571659218443>✅</emoji> Audio is downloaded!",
+        "downloading": "<emoji document_id=5215484787325676090>🕐</emoji> Downloading...",
+        "done": "<emoji document_id=5854762571659218443>✅</emoji> Done!",
     }
 
     strings_ru = {
         "_cls_doc": "Скачивает и отправляет аудио/видео с Ютуба",
         "invalid_args": "<emoji document_id=5854929766146118183>❌</emoji> Нет аргументов или они неверны",
-        "downloading_video": "<emoji document_id=5215484787325676090>🕐</emoji> Видео скачивается...",
-        "downloaded_video": "<emoji document_id=5854762571659218443>✅</emoji> Видео загружено!",
-        "downloading_audio": "<emoji document_id=5215484787325676090>🕐</emoji> Аудио скачивается...",
-        "downloaded_audio": "<emoji document_id=5854762571659218443>✅</emoji> Аудио загружено!",
+        "downloading": "<emoji document_id=5215484787325676090>🕐</emoji> Скачиваю...",
+        "done": "<emoji document_id=5854762571659218443>✅</emoji> Готово!",
     }
 
     def _validate_url(self, url: str) -> bool:
@@ -136,7 +132,7 @@ class YTDLMod(loader.Module):
                     zip_ref.extractall()
                 os.remove("deno.zip")
                 os.chmod(deno_path, 0o755)
-                self.set("deno_source", "file")
+                self.set("deno_source", str(deno_path.resolve()))
         elif deno_which:
             self.set("deno_source", deno_which)
 
@@ -148,32 +144,19 @@ class YTDLMod(loader.Module):
             return
 
         source = self.get("deno_source")
-        deno_path = (
-            Path("deno").resolve()
-            if source == "file"
-            else source
-            if source != "install_failed"
-            else None
-        )
-        if not deno_path:
+        if source == "install_failed":
             logger.critical(
                 "Deno wasn't installed in auto-mode. Please, install it manually or resolve the issue and reboot userbot."
             )
             return
 
-        await utils.answer(message, self.strings["downloading_video"])
+        await utils.answer(message, self.strings["downloading"])
 
         filename_prefix = f"video_{message.id}"
         ydl_opts = {
             "quiet": True,
             "outtmpl": f"{filename_prefix}.%(ext)s",
-            "js_runtimes": {"deno": {"path": str(deno_path)}},
-            "extractor_args": {
-                "youtube": {
-                    "player_client": ["mweb", "android"],
-                }
-            },
-            "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+            "js_runtimes": {"deno": {"path": source}},
             "postprocessors": [
                 {
                     "key": "FFmpegVideoConvertor",
@@ -200,11 +183,9 @@ class YTDLMod(loader.Module):
             ydl_opts["cookiefile"] = self.get("youtube_cookie")
         with YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(args[0], download=True)
-            filename = ydl.prepare_filename(info)
-            await self.client.send_file(
-                message.chat_id, filename, caption=self.strings["downloaded_video"]
-            )
-            await message.delete()
+            filename = ydl.prepare_filename(info).split(".")[0] + ".mp4"
+            await utils.answer(message, self.strings['done'], file=filename, invert_media=True)
+            os.remove(filename)
 
     @loader.command(en_doc="Download audio", ru_doc="Скачать аудио")
     async def ytdlacmd(self, message):
@@ -214,26 +195,19 @@ class YTDLMod(loader.Module):
             return
 
         source = self.get("deno_source")
-        deno_path = (
-            Path("deno").resolve()
-            if source == "file"
-            else source
-            if source != "install_failed"
-            else None
-        )
-        if not deno_path:
+        if source == "install_failed":
             logger.critical(
                 "Deno wasn't installed in auto-mode. Please, install it manually or resolve the issue and reboot userbot."
             )
             return
 
-        await utils.answer(message, self.strings["downloading_audio"])
+        await utils.answer(message, self.strings["downloading"])
 
         filename_prefix = f"audio_{message.id}"
         ydl_opts = {
             "quiet": True,
             "outtmpl": f"{filename_prefix}.%(ext)s",
-            "js_runtimes": {"deno": {"path": str(deno_path)}},
+            "js_runtimes": {"deno": {"path": source}},
             "postprocessors": [
                 {
                     "key": "FFmpegExtractAudio",
@@ -255,7 +229,5 @@ class YTDLMod(loader.Module):
         with YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(args[0], download=True)
             filename = ydl.prepare_filename(info).split(".")[0] + ".mp3"
-            await self.client.send_file(
-                message.chat_id, filename, caption=self.strings["downloaded_audio"]
-            )
-            await message.delete()
+            await utils.answer(message, self.strings['done'], file=filename)
+            os.remove(filename)
