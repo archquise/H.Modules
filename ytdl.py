@@ -108,6 +108,11 @@ class YTDLMod(loader.Module):
     async def client_ready(self, client, db):
         deno_path = Path("deno")
         deno_which = shutil.which("deno")
+
+        # Trying to fix previous shitcode...
+        if self.get("deno_source") == "file":
+            self.set("deno_source", str(deno_path.resolve())) 
+            
         if not deno_which and not deno_path.is_file():
             logger.warning("Deno is not installed, attempting installation...")
             target = await self.get_target()
@@ -144,7 +149,7 @@ class YTDLMod(loader.Module):
             return
 
         source = self.get("deno_source")
-        if source == "install_failed":
+        if source == "install_failed" or not Path(source).is_file():
             logger.critical(
                 "Deno wasn't installed in auto-mode. Please, install it manually or resolve the issue and reboot userbot."
             )
@@ -195,7 +200,7 @@ class YTDLMod(loader.Module):
             return
 
         source = self.get("deno_source")
-        if source == "install_failed":
+        if source == "install_failed" or not Path(source).is_file():
             logger.critical(
                 "Deno wasn't installed in auto-mode. Please, install it manually or resolve the issue and reboot userbot."
             )
