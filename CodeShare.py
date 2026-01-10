@@ -34,6 +34,7 @@ from telethon.types import MessageMediaDocument
 
 logger = logging.getLogger(__name__)
 
+
 @loader.tds
 class CodeShareMod(loader.Module):
     """Uploads your code at the kmi.aeza.net (Pastebin and GitHub Gist alternative)"""
@@ -54,16 +55,16 @@ class CodeShareMod(loader.Module):
     async def upload_to_kmi(self, content: str) -> str:
         url = "https://kmi.aeza.net"
         data = aiohttp.FormData()
-        data.add_field('kmi', content)
+        data.add_field("kmi", content)
 
         async with aiohttp.ClientSession() as session:
-                async with session.post(url, data=data) as response:
-                    if response.status == 200:
-                        link = await response.text()
-                        return link
-                    else:
-                       logger.error(f"Error occurred! Status code: {response.status}")
-                       return
+            async with session.post(url, data=data) as response:
+                if response.status == 200:
+                    link = await response.text()
+                    return link
+                else:
+                    logger.error(f"Error occurred! Status code: {response.status}")
+                    return
 
     @loader.command(
         ru_doc="Загрузка кода на сайт",
@@ -74,20 +75,14 @@ class CodeShareMod(loader.Module):
         reply = await message.get_reply_message()
         if args:
             link = await self.upload_to_kmi(args)
-            await utils.answer(message, self.strings['link_ready'].format(link))
+            await utils.answer(message, self.strings["link_ready"].format(link))
             return
         if reply and isinstance(reply.media, MessageMediaDocument):
             file_name = await reply.download_media()
-            async with aiofiles.open(file_name, mode='r') as f:
+            async with aiofiles.open(file_name, mode="r") as f:
                 content = await f.read()
             link = await self.upload_to_kmi(content)
             await aiofiles.os.remove(file_name)
-            await utils.answer(message, self.strings['link_ready'].format(link))
+            await utils.answer(message, self.strings["link_ready"].format(link))
             return
-        await utils.answer(message, self.strings['invalid_args'])
-            
-
-
-
-
-
+        await utils.answer(message, self.strings["invalid_args"])
