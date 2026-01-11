@@ -19,12 +19,14 @@
 import asyncio
 import logging
 import os
+import re
 import tempfile
 from typing import List, Optional
 import zipfile
+import html
 
 import aiohttp
-from telethon.types import MessageMediaDocument, Message
+from telethon.types import MessageMediaDocument
 
 from telegraph import Telegraph
 
@@ -33,83 +35,11 @@ from .. import loader, utils
 logger = logging.getLogger(__name__)
 
 
-@loader.tds
-class TelegraphComicMod(loader.Module):
-    """Create comics on Telegraph from ZIP/CBZ/RAR archives"""
+class FileUploader:
+    """Class for handling file uploads to various hosting services"""
 
-    strings = {
-        "name": "TelegraphComic",
-        "invalid_args": "<emoji document_id=5388785832956016892>❌</emoji> Invalid arguments. Usage: .telegraphcomics <title> | <cover_url> (optional)",
-        "no_reply": "<emoji document_id=5388785832956016892>❌</emoji> Reply to a message with ZIP/CBZ/RAR file",
-        "unsupported_format": "<emoji document_id=5388785832956016892>❌</emoji> Unsupported file format. Only ZIP/CBZ/RAR files are supported",
-        "processing": "<emoji document_id=5256094480498436162>⏳</emoji> Processing archive...",
-        "uploading": "<emoji document_id=5854762571659218443>⏳</emoji> Uploading images...",
-        "creating_article": "<emoji document_id=5854762571659218443>⏳</emoji> Creating Telegraph article...",
-        "archive_extracted": "<emoji document_id=5854762571659218443>📦</emoji> Archive successfully extracted: <emoji document_id=5208422125924275090>✅</emoji>",
-        "upload_files": "<emoji document_id=5854762571659218443>📦</emoji> Upload image files:",
-        "creating_telegraph": "<emoji document_id=5854762571659218443>📝</emoji> Creating Telegraph article:",
-        "success": '<emoji document_id=5208422125924275090>✅</emoji> <b>Telegraph article created!</b>\n\n<emoji document_id=5256094480498436162>📦</emoji> Archive successfully extracted: <emoji document_id=5208422125924275090>✅</emoji>\n\n<emoji document_id=5256094480498436162>📦</emoji> Upload image files:\n{upload_status}\n\n<emoji document_id=5256230583717079814>📝</emoji> Creating Telegraph article:\n{article_status}\n\n<emoji document_id=5271604874419647061>🔗</emoji> <a href="{url}">{url}</a>',
-        "error": "<emoji document_id=5854929766146118183>❌</emoji> <b>Error:</b> {}",
-        "_cls_doc": "Create comics on Telegraph from ZIP/CBZ/RAR archives",
-    }
-
-    strings_ru = {
-        "_cls_doc": "Создание комиксов на Telegraph из ZIP/CBZ/RAR архивов",
-        "invalid_args": "<emoji document_id=5388785832956016892>❌</emoji> Неверные аргументы. Использование: .telegraphcomics <название> | <ссылка_на_обложку>(необязательно)",
-        "no_reply": "<emoji document_id=5388785832956016892>❌</emoji> Ответьте на сообщение с ZIP/CBZ/RAR файлом",
-        "unsupported_format": "<emoji document_id=5388785832956016892>❌</emoji> Неподдерживаемый формат. Только ZIP/CBZ/RAR файлы",
-        "processing": "<emoji document_id=5256094480498436162>⏳</emoji> Обработка архива...",
-        "uploading": "<emoji document_id=5256094480498436162>⏳</emoji> Загрузка изображений...",
-        "creating_article": "<emoji document_id=5854762571659218443>⏳</emoji> Создание Telegraph статьи...",
-        "archive_extracted": "<emoji document_id=5256094480498436162>📦</emoji> Архив успешно распакован: <emoji document_id=5208422125924275090>✅</emoji>",
-        "upload_files": "<emoji document_id=5256094480498436162>📦</emoji> Загрузка файлов изображений:",
-        "creating_telegraph": "<emoji document_id=5854762571659218443>📝</emoji> Создание Telegraph статьи:",
-        "success": '<emoji document_id=5208422125924275090>✅</emoji> <b>Telegraph статья создана!</b>\n\n<emoji document_id=5256094480498436162>📦</emoji> Архив успешно распакован: <emoji document_id=5208422125924275090>✅</emoji>\n\n<emoji document_id=5256094480498436162>📦</emoji> Загрузка файлов изображений:\n{upload_status}\n\n<emoji document_id=5256230583717079814>📝</emoji> Создание Telegraph статьи:\n{article_status}\n\n<emoji document_id=5271604874419647061>🔗</emoji> <a href="{url}">{url}</a>',
-        "error": "<emoji document_id=5388785832956016892>❌</emoji> <b>Ошибка:</b> {}",
-        "available_services": "Доступные сервисы: catbox, bashupload, kappa, x0, tmpfiles, pomf",
-        "current_service": "Текущий сервис: {}",
-        "invalid_service": "❌ Неизвестный сервис: {}\n\n{}",
-    }
-
-    def __init__(self):
-        self.config = loader.ModuleConfig(
-            loader.ConfigValue(
-                "upload_service",
-                "catbox",
-                "Upload service to use",
-                validator=loader.validators.Choice(
-                    ["catbox", "bashupload", "kappa", "x0", "tmpfiles", "pomf"]
-                ),
-            ),
-            loader.ConfigValue(
-                "short_name",
-                "HikkaMods",
-                "short name for the article",
-                validator=loader.validators.String(),
-            ),
-            loader.ConfigValue(
-                "author_name",
-                "HikkaMods",
-                "nickname of the author of the article",
-                validator=loader.validators.String(),
-            ),
-            loader.ConfigValue(
-                "author_url",
-                "https://t.me/hikka_mods",
-                "link to author",
-                validator=loader.validators.String(),
-            ),
-        )
-
-    async def client_ready(self, client, db):
-        self.client = client
-        self.db = db
-        self.telegraph = Telegraph()
-        self.telegraph.create_account(
-            short_name=self.config["short_name"],
-            author_name=self.config["author_name"],
-            author_url=self.config["author_url"],
-        )
+    def __init__(self, config):
+        self.config = config
 
     async def _upload_file_to_service(
         self,
@@ -209,45 +139,6 @@ class TelegraphComicMod(loader.Module):
                 logger.info(f"Error uploading to kappa: {e}")
         return None
 
-    async def upload_to_x0(self, file_path: str) -> Optional[str]:
-        """Upload file to x0.at"""
-        async with aiohttp.ClientSession() as session:
-            try:
-                with open(file_path, "rb") as f:
-                    data = aiohttp.FormData()
-                    data.add_field("file", f, filename=os.path.basename(file_path))
-
-                    async with session.post("https://x0.at", data=data) as response:
-                        if response.status == 200:
-                            result = await response.text()
-                            return (
-                                result.strip()
-                                if result and "https://" in result
-                                else None
-                            )
-            except Exception as e:
-                logger.info(f"Error uploading to x0: {e}")
-        return None
-
-    async def upload_to_tmpfiles(self, file_path: str) -> Optional[str]:
-        """Upload file to tmpfiles.org"""
-        async with aiohttp.ClientSession() as session:
-            try:
-                with open(file_path, "rb") as f:
-                    data = aiohttp.FormData()
-                    data.add_field("file", f, filename=os.path.basename(file_path))
-
-                    async with session.post(
-                        "https://tmpfiles.org/api/v1/upload", data=data
-                    ) as response:
-                        if response.status == 200:
-                            result = await response.json()
-                            if result and "data" in result and "url" in result["data"]:
-                                return result["data"]["url"]
-            except Exception as e:
-                logger.info(f"Error uploading to tmpfiles: {e}")
-        return None
-
     async def upload_to_pomf(self, file_path: str) -> Optional[str]:
         """Upload file to pomf.lain.la"""
         async with aiohttp.ClientSession() as session:
@@ -275,8 +166,6 @@ class TelegraphComicMod(loader.Module):
             "catbox": self.upload_to_catbox,
             "bashupload": self.upload_to_bashupload,
             "kappa": self.upload_to_kappa,
-            "x0": self.upload_to_x0,
-            "tmpfiles": self.upload_to_tmpfiles,
             "pomf": self.upload_to_pomf,
         }
 
@@ -290,6 +179,108 @@ class TelegraphComicMod(loader.Module):
         except Exception as e:
             logger.error(f"Upload to {service_name} failed: {e}")
             return None
+
+
+@loader.tds
+class TelegraphComicMod(loader.Module):
+    """Create comics on Telegraph from ZIP/CBZ/RAR archives"""
+
+    strings = {
+        "name": "TelegraphComic",
+        "invalid_args": "<emoji document_id=5388785832956016892>❌</emoji> Invalid arguments. Usage: .telegraphcomics <title> | <cover_url> (optional)",
+        "no_reply": "<emoji document_id=5388785832956016892>❌</emoji> Reply to a message with ZIP/CBZ/RAR file",
+        "unsupported_format": "<emoji document_id=5388785832956016892>❌</emoji> Unsupported file format. Only ZIP/CBZ/RAR files are supported",
+        "processing": "<emoji document_id=5256094480498436162>⏳</emoji> Processing archive...",
+        "uploading": "<emoji document_id=5854762571659218443>⏳</emoji> Uploading images...",
+        "creating_article": "<emoji document_id=5854762571659218443>⏳</emoji> Creating Telegraph article...",
+        "archive_extracted": "<emoji document_id=5854762571659218443>📦</emoji> Archive successfully extracted: <emoji document_id=5208422125924275090>✅</emoji>",
+        "upload_files": "<emoji document_id=5854762571659218443>📦</emoji> Upload image files:",
+        "creating_telegraph": "<emoji document_id=5854762571659218443>📝</emoji> Creating Telegraph article:",
+        "success": '<emoji document_id=5208422125924275090>✅</emoji> <b>Telegraph article created!</b>\n\n<emoji document_id=5256094480498436162>📦</emoji> Archive successfully extracted: <emoji document_id=5208422125924275090>✅</emoji>\n\n<emoji document_id=5256094480498436162>📦</emoji> Upload image files:\n{upload_status}\n\n<emoji document_id=5256230583717079814>📝</emoji> Creating Telegraph article:\n{article_status}\n\n<emoji document_id=5271604874419647061>🔗</emoji> <a href="{url}">{url}</a>',
+        "error": "<emoji document_id=5854929766146118183>❌</emoji> <b>Error:</b> {}",
+        "_cls_doc": "Create comics on Telegraph from ZIP/CBZ/RAR archives",
+    }
+
+    strings_ru = {
+        "_cls_doc": "Создание комиксов на Telegraph из ZIP/CBZ/RAR архивов",
+        "invalid_args": "<emoji document_id=5388785832956016892>❌</emoji> Неверные аргументы. Использование: .telegraphcomics <название> | <ссылка_на_обложку>(необязательно)",
+        "no_reply": "<emoji document_id=5388785832956016892>❌</emoji> Ответьте на сообщение с ZIP/CBZ/RAR файлом",
+        "unsupported_format": "<emoji document_id=5388785832956016892>❌</emoji> Неподдерживаемый формат. Только ZIP/CBZ/RAR файлы",
+        "processing": "<emoji document_id=5256094480498436162>⏳</emoji> Обработка архива...",
+        "uploading": "<emoji document_id=5256094480498436162>⏳</emoji> Загрузка изображений...",
+        "creating_article": "<emoji document_id=5854762571659218443>⏳</emoji> Создание Telegraph статьи...",
+        "archive_extracted": "<emoji document_id=5256094480498436162>📦</emoji> Архив успешно распакован: <emoji document_id=5208422125924275090>✅</emoji>",
+        "upload_files": "<emoji document_id=5256094480498436162>📦</emoji> Загрузка файлов изображений:",
+        "creating_telegraph": "<emoji document_id=5854762571659218443>📝</emoji> Создание Telegraph статьи:",
+        "success": '<emoji document_id=5208422125924275090>✅</emoji> <b>Telegraph статья создана!</b>\n\n<emoji document_id=5256094480498436162>📦</emoji> Архив успешно распакован: <emoji document_id=5208422125924275090>✅</emoji>\n\n<emoji document_id=5256094480498436162>📦</emoji> Загрузка файлов изображений:\n{upload_status}\n\n<emoji document_id=5256230583717079814>📝</emoji> Создание Telegraph статьи:\n{article_status}\n\n<emoji document_id=5271604874419647061>🔗</emoji> <a href="{url}">{url}</a>',
+        "error": "<emoji document_id=5388785832956016892>❌</emoji> <b>Ошибка:</b> {}",
+    }
+
+    def __init__(self):
+        self.config = loader.ModuleConfig(
+            loader.ConfigValue(
+                "upload_service",
+                "catbox",
+                "Upload service to use",
+                validator=loader.validators.Choice(
+                    ["catbox", "bashupload", "kappa", "pomf"]
+                ),
+            ),
+            loader.ConfigValue(
+                "short_name",
+                "HikkaMods",
+                "short name for the article",
+                validator=loader.validators.String(),
+            ),
+            loader.ConfigValue(
+                "author_name",
+                "HikkaMods",
+                "nickname of the author of the article",
+                validator=loader.validators.String(),
+            ),
+            loader.ConfigValue(
+                "author_url",
+                "https://t.me/hikka_mods",
+                "link to author",
+                validator=loader.validators.String(),
+            ),
+            loader.ConfigValue(
+                "header_text",
+                None,
+                "Text to add at the beginning of the article (set to null to disable)",
+                validator=loader.validators.String(),
+            ),
+            loader.ConfigValue(
+                "smart_sorting",
+                True,
+                "Enable smart file numbering (supports both 001 and 1 formats)",
+                validator=loader.validators.Boolean(),
+            ),
+        )
+
+    async def client_ready(self, client, db):
+        self.client = client
+        self.db = db
+        self.uploader = FileUploader(self.config)
+        self.telegraph = Telegraph()
+        self.telegraph.create_account(
+            short_name=self.config["short_name"],
+            author_name=self.config["author_name"],
+            author_url=self.config["author_url"],
+        )
+
+    def _extract_number_from_filename(self, filename: str) -> tuple:
+        """Extract number from filename for smart sorting with HTML support"""
+
+        try:
+            decoded_filename = html.unescape(filename)
+        except Exception:
+            decoded_filename = filename
+
+        match = re.search(r"(\d+)", decoded_filename)
+        if match:
+            return int(match.group(1)), filename
+        return float("inf"), filename
 
     async def extract_zip_archive(self, zip_path: str, extract_dir: str) -> List[str]:
         """Extract ZIP archive and return sorted list of image files"""
@@ -305,7 +296,14 @@ class TelegraphComicMod(loader.Module):
                         if os.path.splitext(file)[1].lower() in image_extensions:
                             image_files.append(os.path.join(root, file))
 
-                image_files.sort(key=lambda x: os.path.basename(x).lower())
+                if self.config["smart_sorting"]:
+                    image_files.sort(
+                        key=lambda x: self._extract_number_from_filename(
+                            os.path.basename(x)
+                        )
+                    )
+                else:
+                    image_files.sort(key=lambda x: os.path.basename(x).lower())
 
         except Exception as e:
             logger.info(f"Error extracting ZIP archive: {e}")
@@ -317,11 +315,18 @@ class TelegraphComicMod(loader.Module):
     ) -> Optional[str]:
         """Create Telegraph article with images"""
         try:
+            content_parts = []
+
+            header_text = self.config["header_text"]
+            if header_text:
+                content_parts.append(f"<p>{header_text}</p><br>")
+
             if cover_url:
-                content = f'<img src="{cover_url}"/><br>'
-                content += "<br>".join(f'<img src="{url}"/>' for url in image_urls)
-            else:
-                content = "<br>".join(f'<img src="{url}"/>' for url in image_urls)
+                content_parts.append(f'<img src="{cover_url}"/><br>')
+
+            content_parts.extend(f'<img src="{url}"/>' for url in image_urls)
+
+            content = "".join(content_parts)
 
             response = await asyncio.to_thread(
                 lambda: self.telegraph.create_page(
@@ -358,7 +363,7 @@ class TelegraphComicMod(loader.Module):
                     if message and message.media:
                         media_path = await message.download_media()
                         if media_path:
-                            uploaded_url = await self.upload_file(media_path)
+                            uploaded_url = await self.uploader.upload_file(media_path)
                             os.remove(media_path)
                             return uploaded_url
             except Exception as e:
@@ -429,7 +434,9 @@ class TelegraphComicMod(loader.Module):
 
                 await utils.answer(message, self.strings["uploading"])
 
-                upload_tasks = [self.upload_file(img_file) for img_file in image_files]
+                upload_tasks = [
+                    self.uploader.upload_file(img_file) for img_file in image_files
+                ]
                 upload_results = await asyncio.gather(
                     *upload_tasks, return_exceptions=True
                 )
