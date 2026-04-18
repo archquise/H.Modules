@@ -633,7 +633,7 @@ class SoundCloudMod(loader.Module):
                 "oauth_token",
                 "",
                 "SoundCloud OAuth token",
-                validator=loader.validators.String(),
+                validator=loader.validators.Hidden(),
             ),
             loader.ConfigValue(
                 "history_count",
